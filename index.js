@@ -13,6 +13,9 @@ mongoose.connect(process.env.DB_CONNECT, {
   useCreateIndex: true
 }).then(() => console.log("MongoDB Connected..")).catch(err => console.log(err));
 
+app.get('/',(req,res)=>{
+  res.send("hello users");
+})
 //middleware
 app.use(express.json());
 
