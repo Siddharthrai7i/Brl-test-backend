@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
 
+const PORT =process.env.PORT || 3000;
 dotenv.config();
 
 // Connect to Mongo
