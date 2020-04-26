@@ -26,4 +26,4 @@ app.use(express.json());
 //middleware
 app.use('/api/user', authRoute);
 
-app.listen(3000, () => console.log('server up and running'));
+app.listen(PORT, () => console.log('server up and running'));
