@@ -16,6 +16,11 @@ password:{
   max:1024,
   min:6
 },
+rollNo:{
+  type:String,
+  required:true,
+  max:13,
+},
 date:{
   type:Date,
   default:Date.now
