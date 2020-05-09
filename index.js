@@ -3,6 +3,8 @@ const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
+const userRoute =require('./routes/User');
+
 
 const PORT =process.env.PORT || 3000;
 dotenv.config();
@@ -20,24 +22,9 @@ app.get('/',(req,res)=>{
   });
 })
 
-app.get('/userId',(req,res)=>{
-const id = req.params.userId;
- res.status(200).json({
-   message:"you passed an id",
- })
-});
 
-app.patch('/userId',(req,res)=>{
-  res.status(200).json({
-    message:"upadated user",
-  })
-});
 
-app.delete('/userId',(req,res)=>{
-  res.status(200).json({
-    message:"user deleted",
-  })
-})
+
 
 //middleware
 app.use(express.json());
@@ -46,8 +33,8 @@ app.use(express.json());
 
 
 //middleware
-app.use('/user', authRoute);
-
+app.use('/api/user', authRoute);
+app.use('/User',userRoute);
 app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 })
