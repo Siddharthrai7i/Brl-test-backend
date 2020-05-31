@@ -31,7 +31,7 @@ module.exports.register = async (req, res) => {
         password: hashedPassword
     }).save().then(user =>{
         if(user){
-            res.send(user);
+            res.send({user:user._id});
         }
     }).catch( err =>{
         res.status(400).send(err);

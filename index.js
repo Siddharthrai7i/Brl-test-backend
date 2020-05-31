@@ -1,10 +1,10 @@
-const express = require('express');
+ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
 const userRoute =require('./routes/User');
-
+const questionRoute=require('./routes/question');
 
 const PORT =process.env.PORT || 3000;
 dotenv.config();
@@ -35,6 +35,7 @@ app.use(express.json());
 //middleware
 app.use('/api/user', authRoute);
 app.use('/User',userRoute);
+app.use('/Question',questionRoute)
 app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 })
