@@ -32,7 +32,7 @@ app.post('/upload',upload,(req,res)=>{
   console.log(req.file)
   // res.send({
   // message:"Hello World"
-    console.log(uuid())
+    console.log(uuidv4())
   // })
   const params ={
     Bucket:process.env.AWS_BUCKET_NAME,
