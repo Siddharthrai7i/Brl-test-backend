@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const authController = require('../controller/authController')
+const authregister = require('../controller/authregister')
 const authlogin= require('../controller/authlogin')
 //validation
 //const Joi =require('@hapi/joi');
@@ -12,8 +12,7 @@ const authlogin= require('../controller/authlogin')
 //}); 
 
 
-router.post('/register', authController.register);
-router.get('/register',authController.register);
+router.post('/register', authregister.register);
 router.post('/login', authlogin.login);
 
 module.exports = router;

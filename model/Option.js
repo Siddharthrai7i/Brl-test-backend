@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const QuestionSchema = new mongoose.Schema({
     value: { type: String, required: true },
-    options: [{type: mongoose.Schema.Types.ObjectId, ref: "Option"}]
+    correct: {type: Boolean, required: true}
 });
 
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = mongoose.model('Option', QuestionSchema);

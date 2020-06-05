@@ -16,7 +16,7 @@ password:{
   max:1024,
   min:6
 },
-rollNo:{
+rollNumber:{
   type:String,
   required:true,
   max:13,
