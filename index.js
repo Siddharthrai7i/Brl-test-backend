@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const multer =require('multer');
 const AWS =require('aws-sdk');
-const uuidv4  =require('uuid/v4');
+const {uuid}   =require('uuidv4')
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
@@ -32,11 +32,11 @@ app.post('/upload',upload,(req,res)=>{
   console.log(req.file)
   // res.send({
   // message:"Hello World"
-    
+    console.log(uuid())
   // })
   const params ={
     Bucket:process.env.AWS_BUCKET_NAME,
-    Key:`${uuidv4()}.${fileType}`,
+    Key:`${uuid()}.${fileType}`,
     Body: req.file.buffer
   }
   s3.upload(params,(error,data)=>{
