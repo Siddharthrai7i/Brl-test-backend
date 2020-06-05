@@ -24,7 +24,7 @@ const storage = multer.memoryStorage({
 
 const upload = multer({storage}).single('image')
 
-app.post('/upload',upload,(req,res)=>{
+app.post('/upload', upload,(req,res)=>{
  let myFile = req.file.originalname.split(".")
  const fileType=myFile[myFile.length - 1] 
 
