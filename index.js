@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-const multer =require('multer');
-const AWS =require('aws-sdk');
-const {v4:uuidv4}   =require('uuid')
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const {v4:uuidv4} = require('uuid')
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
-const questionRoute=require('./routes/question');
+const questionRoute = require('./routes/question');
 
 dotenv.config();
 const PORT =process.env.PORT || 3000;
@@ -14,7 +14,6 @@ const PORT =process.env.PORT || 3000;
 const s3 = new AWS.S3({
   accessKeyId:process.env.AWS_ID,
   secretAccessKey:process.env.AWS_SECRET
-
 })
 
 const storage = multer.memoryStorage({
@@ -61,19 +60,13 @@ app.get('/',(req,res)=>{
   });
 })
 
-
-
-
-
 //middleware
 app.use(express.json());
-
-
-
 
 //middleware
 app.use(authRoute);
 app.use(questionRoute)
-app.listen(process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+
+const server = app.listen(process.env.PORT || 3000, () => {
+  console.log(`Express server listening on port ${server.address().port} in ${app.settings.env} mode`);
 })

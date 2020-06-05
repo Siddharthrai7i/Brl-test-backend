@@ -1,8 +1,16 @@
 const mongoose = require('mongoose');
 
 const QuestionSchema = new mongoose.Schema({
-    value: { type: String, required: true },
-    options: [{type: mongoose.Schema.Types.ObjectId, ref: "Option"}]
+    value: {
+        type: String,
+        required: true
+    },
+    options: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Option"
+        }
+    ]
 });
 
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = Questions = mongoose.model('Question', QuestionSchema);
