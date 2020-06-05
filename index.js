@@ -17,7 +17,7 @@ const s3 = new AWS.S3({
 })
 
 const storage = multer.memoryStorage({
-  destination:function(req,file,callback){
+  destination:function(req, file ,callback){
     callback(null,'')
   }
 })
@@ -66,6 +66,10 @@ app.use(express.json());
 //middleware
 app.use(authRoute);
 app.use(questionRoute)
+
+app.use((req, res) => {
+  res.status(404).send('404 Not Found')
+})
 
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Express server listening on port ${server.address().port} in ${app.settings.env} mode`);
