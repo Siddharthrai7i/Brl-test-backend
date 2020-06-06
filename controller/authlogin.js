@@ -12,16 +12,22 @@ const schema =Joi.object({
 exports.login = async (req, res) => {
 
    const {error} = schema.validate(req.body);
-   if(error) return res.status(400).send(error.details[0].message);
+   if(error) {
+     const err = error.details[0].message
+     return res.status(400).json({err});
+    }
 
    const user = await User.findOne({rollNumber:req.body.rollNumber});
-   if(!user) return res.status(400).send('Invalid roll No');
+   if(!user) return res.status(400).json({error: 'Invalid Roll Number'});
 
    const validPass = await bcrypt.compare(req.body.password,user.password)
+   if(!validPass) return res.status(400).json({errors: [{msg: 'Invalid Credentials'}]})
   
-   if(!validPass) return res.status(400).send('Invalid password') 
-  
-  const token =jwt.sign({ _id: user._id},process.env.TOKEN_SECRET)
-  res.header('auth-token',token).send(token);
+  jwt.sign({ _id: user._id}, process.env.TOKEN_SECRET, {}, (err, token) => {
+    if (err) throw err;
+    res.json({token})
+  })
+  // res.header('auth-token',token).json({
+  //   token: token});
 }
  
