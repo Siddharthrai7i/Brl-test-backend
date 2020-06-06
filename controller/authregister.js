@@ -28,6 +28,7 @@ exports.register = async (req, res) => {
    const hashedPassword = await bcrypt.hash(password ,salt);
    
     user = new User({
+        
         name: name,
         rollNumber:rollNumber,
         email: email,
