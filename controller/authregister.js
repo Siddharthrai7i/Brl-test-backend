@@ -36,21 +36,14 @@ exports.register = async (req, res) => {
     })
 
     await user.save()
-    
-    const payload = {
-        user: {
-            id: user.id,
-            message: 'User Registered'
-        }
-    }
 
-    console.log(user);
+    res.json({user})
 
-    jwt.sign(payload, process.env.TOKEN_SECRET, (err, token) => {
-        if (err)
-            res.json({err})
-        res.json({token, user})
-    })
+    // jwt.sign(payload, process.env.TOKEN_SECRET, (err, token) => {
+    //     if (err)
+    //         res.json({err})
+    //     res.json({user})
+    // })
 
     // .then(user =>{
     //     if(user){
