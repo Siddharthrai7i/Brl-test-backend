@@ -40,12 +40,6 @@ exports.register = async (req, res) => {
 
     res.json({user})
 
-    // jwt.sign(payload, process.env.TOKEN_SECRET, (err, token) => {
-    //     if (err)
-    //         res.json({err})
-    //     res.json({user})
-    // })
-
     // .then(user =>{
     //     if(user){
     //         res.send({
