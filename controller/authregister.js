@@ -22,6 +22,9 @@ exports.register = async (req, res) => {
 
    const emailExist = await User.findOne({email:req.body.email});
    if(emailExist) return res.status(400).json({error: 'email already exists'});
+
+   const rollNumberExists = await User.findOne({rollNumber: req.body.rollNumber})
+   if (rollNumberExists) return res.status(400).json({error: 'roll number already exists'})
     
    //Hash password
    const { name, rollNumber, email, branch, password, phoneNumber } = req.body;
