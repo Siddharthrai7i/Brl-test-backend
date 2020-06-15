@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const schema = Joi.object({
     name:Joi.string().required(),
+    phoneNumber:Joi.string().required(),
     rollNumber: Joi.number().required(),  
     email: Joi.string().email().required(),
     branch: Joi.string().required(),
@@ -23,14 +24,15 @@ exports.register = async (req, res) => {
    if(emailExist) return res.status(400).json({error: 'email already exists'});
     
    //Hash password
+   const { name, rollNumber, email, branch, password, phoneNumber } = req.body;
+
    const salt = await bcrypt.genSalt(10);
-   const { name, rollNumber, email, branch, password } = req.body;
    const hashedPassword = await bcrypt.hash(password ,salt);
    
     user = new User({
-        
         name: name,
         rollNumber:rollNumber,
+        phoneNumber,
         email: email,
         branch:branch,
         password: hashedPassword
@@ -38,16 +40,5 @@ exports.register = async (req, res) => {
 
     await user.save()
 
-    res.json({user})
-
-    // .then(user =>{
-    //     if(user){
-    //         res.send({
-    //             user:user._id,
-    //             message:'User registered'
-    //         });
-    //     }
-    // }).catch( err => {
-    //     res.status(400).json({err});
-    // })
+    res.status(200).json({user})
 };
