@@ -35,11 +35,11 @@ app.use(express.json());
 //   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
 //   next()
 // })
-var corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-app.use(cors(corsOptions))
+// var corsOptions = {
+//   origin: '*',
+//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
+app.use(cors())
 
 //middleware
 app.use(authRoute);
