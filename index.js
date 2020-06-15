@@ -26,10 +26,18 @@ app.get('/',(req,res)=>{
 
 //middleware
 app.use(express.json());
+// CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  red.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  next()
+})
 
 //middleware
 app.use(authRoute);
 app.use(questionRoute)
+
 
 app.use('/admin',adminRoute)
 app.use((req, res) => {
