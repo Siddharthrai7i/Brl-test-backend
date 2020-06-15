@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
 const questionRoute = require('./routes/question');
 const adminRoute =require('./routes/admin');
+const cors = require('cors')
 
 dotenv.config();
 const PORT =process.env.PORT || 3000;
@@ -26,13 +27,19 @@ app.get('/',(req,res)=>{
 
 //middleware
 app.use(express.json());
+
 // CORS
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  red.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  next()
-})
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*')
+//   red.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+//   next()
+// })
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions))
 
 //middleware
 app.use(authRoute);
