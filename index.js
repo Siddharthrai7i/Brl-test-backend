@@ -9,7 +9,7 @@ const adminRoute =require('./routes/admin');
 const cors = require('cors')
 
 dotenv.config();
-const PORT = process.env.PORT || 3000;
+const PORT =process.env.PORT || 3000;
 
 
 // Connect to Mongo
@@ -28,17 +28,17 @@ app.get('/',(req,res)=>{
 //middleware
 app.use(express.json());
 
-// var corsOptions = {
-//   origin: '*',
-//   optionsSuccessStatus: 200
-// }
-app.use(cors())
+//Cors Policy
+app.use(cors({
+    origin: "*"
+}));
 
 //middleware
 app.use(authRoute);
 app.use(questionRoute)
-app.use('/admin',adminRoute)
 
+
+app.use('/admin',adminRoute)
 app.use((req, res) => {
   res.status(404).send('404 Not Found')
 })
