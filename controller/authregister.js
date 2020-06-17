@@ -33,11 +33,11 @@ exports.register = async (req, res) => {
    const hashedPassword = await bcrypt.hash(password ,salt);
    
     user = new User({
-        name: name,
-        rollNumber:rollNumber,
+        name,
+        rollNumber,
         phoneNumber,
-        email: email,
-        branch:branch,
+        email,
+        branch,
         password: hashedPassword
     })
 
