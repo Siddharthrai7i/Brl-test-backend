@@ -11,7 +11,6 @@ const cors = require('cors')
 dotenv.config();
 const PORT =process.env.PORT || 3000;
 
-
 // Connect to Mongo
 mongoose.connect(process.env.DB_CONNECT, {
   useUnifiedTopology: true,
