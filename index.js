@@ -9,7 +9,7 @@ const adminRoute =require('./routes/admin');
 const cors = require('cors')
 
 dotenv.config();
-const PORT =process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // Connect to Mongo
 mongoose.connect(process.env.DB_CONNECT, {
@@ -18,7 +18,7 @@ mongoose.connect(process.env.DB_CONNECT, {
   useCreateIndex: true
 }).then(() => console.log("MongoDB Connected..")).catch(err => console.log(err));
 
-app.get('/',(req,res)=>{
+app.get('/',(req, res)=>{
   res.status(200).json({
     message:"Handling GET request",
   });
@@ -42,6 +42,6 @@ app.use((req, res) => {
   res.status(404).send('404 Not Found')
 })
 
-const server = app.listen(process.env.PORT || 3000, () => {
+const server = app.listen(PORT, () => {
   console.log(`Express server listening on port ${server.address().port} in ${app.settings.env} mode`);
 })

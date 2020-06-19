@@ -1,38 +1,41 @@
 const router = require('express').Router();
 const authregister = require('../controller/authregister')
-// const authlogin = require('../controller/authlogin')
 const User = require('../model/User')
-const Joi = require('@hapi/joi')
+// const Joi = require('@hapi/joi')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-
+const {check, validationResult} = require('express-validator')
 
 const auth = require('../middleware/auth')
 
-const login_schema = Joi.object({
-    rollNumber: Joi.number().required(),  
-    password:Joi.string().min(5).required()
-});
 
-
+// @route   POST /register
+// @desc    Register user and return user object
+// @access  Public
 router.post('/register', authregister.register);
+
+
 
 // @route   POST /login
 // @desc    Login user and return jwt and user object
 // @access  Public
-router.post('/login', async (req, res) => {
+router.post('/login',[
+        check('rollNumber', 'Please include a valid Roll Number').isNumeric().exists(),
+        check('password', 'Password of minimum length 5 is required').isLength({min: 5}).exists()
+    ], async (req, res) => {
 
-    const {error} = login_schema.validate(req.body);
-    if(error) {
-        const err = error.details[0].message
-        return res.status(400).json({err});
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(401).json({errors: errors.array()})
     }
+
+    const {rollNumber, password} = req.body
   
-    const user = await User.findOne({rollNumber:req.body.rollNumber});
+    const user = await User.findOne({rollNumber});
     if(!user) return res.status(400).json({error: 'Wrong roll number'});
   
-    const validPass = await bcrypt.compare(req.body.password, user.password)
-    if(!validPass) return res.status(400).json({errors: [{msg: 'Invalid Credential'}]})
+    const validPass = await bcrypt.compare(password, user.password)
+    if(!validPass) return res.status(401).json({errors: [{msg: 'Invalid Credential'}]})
     
     const payload = {
         user: {
