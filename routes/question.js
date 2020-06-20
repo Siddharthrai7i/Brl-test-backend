@@ -19,10 +19,19 @@ router.get('/get-questions', auth, async (req, res, next) => {
     await Question.countDocuments({},(err, cnt) => {
         console.log(cnt);
     })
-    const questions = await Question.find();
-    return res.status(200).json({questions})
 
+    const all_questions = await Question.find();
 
+    temp_questions_arr = []
+    for (let i = 0; i < all_questions.length; i++) {
+        temp_questions_arr.push(all_questions[i]._id)
+    }
+    
+    user.questions = temp_questions_arr
+    user.save()
+    
+    return res.status(200).json({all_questions})
+    
 });
 
 
