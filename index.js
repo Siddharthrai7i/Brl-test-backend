@@ -6,10 +6,10 @@ const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
 const questionRoute = require('./routes/question');
 const adminRoute =require('./routes/admin');
+const cors = require('cors')
 
 dotenv.config();
-const PORT =process.env.PORT || 3000;
-
+const PORT = process.env.PORT || 3000;
 
 // Connect to Mongo
 mongoose.connect(process.env.DB_CONNECT, {
@@ -18,7 +18,7 @@ mongoose.connect(process.env.DB_CONNECT, {
   useCreateIndex: true
 }).then(() => console.log("MongoDB Connected..")).catch(err => console.log(err));
 
-app.get('/',(req,res)=>{
+app.get('/',(req, res)=>{
   res.status(200).json({
     message:"Handling GET request",
   });
@@ -26,6 +26,7 @@ app.get('/',(req,res)=>{
 
 //middleware
 app.use(express.json());
+<<<<<<< HEAD
 // CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -33,6 +34,13 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   next()
 })
+=======
+
+//Cors Policy
+app.use(cors({
+    origin: "*"
+}));
+>>>>>>> 4b6c97db93b10d047450dd65509c3556921efc08
 
 //middleware
 app.use(authRoute);
@@ -44,6 +52,6 @@ app.use((req, res) => {
   res.status(404).send('404 Not Found')
 })
 
-const server = app.listen(process.env.PORT || 3000, () => {
+const server = app.listen(PORT, () => {
   console.log(`Express server listening on port ${server.address().port} in ${app.settings.env} mode`);
 })
