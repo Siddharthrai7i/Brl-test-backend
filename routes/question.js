@@ -7,11 +7,42 @@ const questionController = require('../controller/questions');
 
 const router = express.Router();
 
-router.post('/add-question', questionController.postQuestions);
 router.post('/check-answers', questionController.postCheckAnswers);
 
 
 
+// @route   POST /add-question
+// @desc    Add questions to database
+// @access  Public
+router.post('/add-question', async (req, res) => {
+    const {question, one, two, three, four, correct} = req.body;
+    
+
+    try {
+        const new_question = new Question({
+            question,
+            one,
+            two,
+            three,
+            four,
+            correct
+        })
+
+        await new_question.save()
+
+        return res.status(200).json({msg: "Question Saved"})
+    } catch (err) {
+        if(err) {
+            res.status(500).json({error: 'Server Error'})
+        }
+    }
+})
+
+
+
+// @route   POST /get-questions
+// @desc    Get 10 random questions
+// @access  Private
 router.get('/get-questions', auth, async (req, res, next) => {
     
     const user = await User.findById(req.user.id)
@@ -31,7 +62,6 @@ router.get('/get-questions', auth, async (req, res, next) => {
         let s2 = Math.random() * s1
         let res = Math.floor(s2)
         
-        // rind = res
 
         let randomNumber = nos_list[res]
         nos_list.splice(res, 1)
@@ -44,7 +74,16 @@ router.get('/get-questions', auth, async (req, res, next) => {
 
     for (let i = 0; i < random_list.length; i++) {
         temp_questions_arr.push(all_questions[random_list[i]]._id)
-        res_questions.push(all_questions[random_list[i]])
+
+        
+        const {_id, question, one, two, three, four} = all_questions[random_list[i]]
+        question_object = {
+            _id,
+            question,
+            options: [one, two, three, four]
+        }
+
+        res_questions.push(question_object)
     }
     
     user.questions = temp_questions_arr

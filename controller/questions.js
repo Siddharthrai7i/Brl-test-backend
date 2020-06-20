@@ -4,25 +4,7 @@ const Question = require('../model/Question');
 const Option = require('../model/Option');
 
 
-exports.postQuestions = async (req, res) => {
-    const {question, options, questionNumber} = req.body;
-
-    try {
-        const new_question = new Question({
-            question,
-            options,
-            questionNumber
-        })
-    
-        await new_question.save()
-
-        return res.status(200).json({msg: "Question Saved"})
-    } catch (err) {
-        if(err) {
-            res.status(500).send('Server Error')
-        }
-    }
-};
+// exports.postQuestions = 
 
 
 

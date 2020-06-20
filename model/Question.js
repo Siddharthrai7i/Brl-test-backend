@@ -5,21 +5,27 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    options: [
-        {
-            option: {
-                type: String,
-                required: true
-            },
-            isCorrect: {
-                type: Boolean,
-                required: true
-            }
-        }
-    ],
-    questionNumber: {
-        type: Number,
+    one: {
+        type: String,
+        required: true
+    },
+    two: {
+        type: String,
+        required: true
+    },
+    three: {
+        type: String,
+        required: true
+    },
+    four: {
+        type: String,
+        required: true
+    },
+    correct: {
+        type: String,
+        required: true
     }
 });
+
 
 module.exports = Question = mongoose.model('Question', QuestionSchema);
