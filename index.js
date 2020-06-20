@@ -26,21 +26,11 @@ app.get('/',(req, res)=>{
 
 //middleware
 app.use(express.json());
-<<<<<<< HEAD
-// CORS
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  next()
-})
-=======
 
 //Cors Policy
 app.use(cors({
     origin: "*"
 }));
->>>>>>> 4b6c97db93b10d047450dd65509c3556921efc08
 
 //middleware
 app.use(authRoute);
