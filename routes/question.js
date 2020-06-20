@@ -31,6 +31,7 @@ router.get('/get-questions', auth, async (req, res, next) => {
         let s2 = Math.random() * s1
         let res = Math.floor(s2)
         
+        
         // rind = res
 
         let randomNumber = nos_list[res]
