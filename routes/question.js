@@ -16,9 +16,9 @@ router.get('/get-questions', auth, async (req, res, next) => {
     
     const user = await User.findById(req.user.id)
 
-    await Question.countDocuments({},(err, cnt) => {
-        console.log(cnt);
-    })
+    // await Question.countDocuments({},(err, cnt) => {
+    //     console.log(cnt);
+    // })
 
     const all_questions = await Question.find();
 
