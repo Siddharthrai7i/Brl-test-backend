@@ -45,6 +45,13 @@ router.post('/add-question', async (req, res) => {
 router.get('/get-questions', auth, async (req, res, next) => {
     
     const user = await User.findById(req.user.id)
+    
+    // If user already has the questions
+    if (user.questions.length === 10) {
+        return res.redirect('/return-questions')
+    }
+
+
     const all_questions = await Question.find();
 
     // get total number of docs
@@ -94,3 +101,116 @@ router.get('/get-questions', auth, async (req, res, next) => {
 
 
 module.exports = router;
+
+
+// @route   POST /return-questions
+// @desc    Get 10 random questions
+// @access  Private
+router.get('/return-questions',auth, async (req, res, next) => {
+    const user = await User.findById(req.user.id)
+
+    res_questions = []
+
+    //////////////////////////
+    var question_ob = await Question.findById(user.questions[0]);
+    var {_id, question, one, two, three, four} = question_ob
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_1 = await Question.findById(user.questions[1]);
+    var {_id, question, one, two, three, four} = question_ob_1
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_2 = await Question.findById(user.questions[2]);
+    var {_id, question, one, two, three, four} = question_ob_2
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_3 = await Question.findById(user.questions[3]);
+    var {_id, question, one, two, three, four} = question_ob_3
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_4 = await Question.findById(user.questions[4]);
+    var {_id, question, one, two, three, four} = question_ob_4
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_5 = await Question.findById(user.questions[5]);
+    var {_id, question, one, two, three, four} = question_ob_5
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_6 = await Question.findById(user.questions[6]);
+    var {_id, question, one, two, three, four} = question_ob_6
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_7 = await Question.findById(user.questions[7]);
+    var {_id, question, one, two, three, four} = question_ob_7
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_8 = await Question.findById(user.questions[8]);
+    var {_id, question, one, two, three, four} = question_ob_8
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+
+    //////////////////////////
+    var question_ob_9 = await Question.findById(user.questions[9]);
+    var {_id, question, one, two, three, four} = question_ob_9
+    question_object = {
+        _id,
+        question,
+        options: [one, two, three, four]
+    }
+    res_questions.push(question_object)
+    
+
+    return res.status(200).json({res_questions})
+})
