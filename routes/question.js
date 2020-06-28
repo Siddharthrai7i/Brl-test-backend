@@ -16,7 +16,6 @@ router.post('/check-answers', questionController.postCheckAnswers);
 // @access  Public
 router.post('/add-question', async (req, res) => {
     const {question, one, two, three, four, correct} = req.body;
-    
 
     try {
         const new_question = new Question({
