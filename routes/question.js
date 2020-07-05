@@ -23,4 +23,14 @@ router.get(
   questionController.returnQuestions
 );
 
+// @route   POST /return-questions
+// @desc    Get 10 random questions
+// @access  Private
+router.post(
+    "/submit-responses",
+    authStudent,
+    questionController.saveResponses
+);
+
+
 module.exports = router;

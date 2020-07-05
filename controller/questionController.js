@@ -3,7 +3,6 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../model/User");
 const Question = require("../model/Question");
 
-// exports.postQuestions =
 
 exports.postCheckAnswers = (req, res, next) => {
   let token = req.headers["authorization"];
@@ -64,6 +63,7 @@ exports.postCheckAnswers = (req, res, next) => {
   });
 };
 
+
 exports.returnQuestions = async (req, res, next) => {
   const result = await User.aggregate([
     { $match: { _id: ObjectId(req.user.id) } },
@@ -91,6 +91,7 @@ exports.returnQuestions = async (req, res, next) => {
   ]);
   return res.status(200).json({ res_questions: result[0].questionsDetails });
 };
+
 
 exports.getQuestions = async (req, res, next) => {
   const user = await User.findById(req.user.id);
@@ -142,3 +143,18 @@ exports.addQuestions = async (req, res) => {
     }
   }
 };
+
+
+// store responses
+exports.saveResponses = async (req, res, next) => {
+
+  try {
+    const user = await User.findById(req.user.id)
+    user.responses = req.body.responses
+    await user.save()
+    return res.status(200).json({msg: "Success"})
+
+  } catch (err) {
+    res.status(500).json({ error: "Server Error" });
+  }
+}

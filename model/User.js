@@ -26,9 +26,20 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    responses: [
+      {
+        question: {
+          type: String
+        },
+        response: {
+          type: String
+        }
+      }
+    ]
   },
   { timestamps: true }
 );
+
 
 userSchema.pre("save", function (next) {
   var user = this;
