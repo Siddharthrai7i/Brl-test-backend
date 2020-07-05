@@ -23,8 +23,8 @@ router.get(
   questionController.returnQuestions
 );
 
-// @route   POST /return-questions
-// @desc    Get 10 random questions
+// @route   POST /submit-responses
+// @desc    Store selected answers
 // @access  Private
 router.post(
     "/submit-responses",

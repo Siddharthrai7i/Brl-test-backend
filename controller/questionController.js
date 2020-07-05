@@ -150,7 +150,24 @@ exports.saveResponses = async (req, res, next) => {
 
   try {
     const user = await User.findById(req.user.id)
-    user.responses = req.body.responses
+
+    selected = req.body.responses
+    
+    selected.forEach(element => {
+      if (element.response === 1)
+        element.response = "one"
+
+      if (element.response === 2)
+        element.response = "two"
+
+      if (element.response === 3)
+        element.response = "three"
+
+      if (element.response === 4)
+        element.response = "four"
+    });
+
+    user.responses = selected
     await user.save()
     return res.status(200).json({msg: "Success"})
 
