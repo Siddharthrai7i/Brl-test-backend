@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 
 const checkToken = (req, res, next) => {
-  const token = req.headers["x-auth-token"];
+  let bearertoken = req.headers['authorization']
+  const token = bearertoken.replace('Bearer ', '')
   if (typeof token !== "undefined") {
     try {
       const decoded = jwt.verify(token, process.env.TOKEN_SECRET);

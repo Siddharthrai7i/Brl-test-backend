@@ -121,6 +121,7 @@ exports.getQuestions = async (req, res, next) => {
   return res.status(200).json({ res_questions });
 };
 
+
 exports.addQuestions = async (req, res) => {
   const { question, one, two, three, four, correct } = req.body;
 
@@ -154,20 +155,53 @@ exports.saveResponses = async (req, res, next) => {
     selected = req.body.responses
     
     selected.forEach(element => {
-      if (element.response === 1)
+      if (element.response === 1) {
         element.response = "one"
-
-      if (element.response === 2)
+      } else if (element.response === 2) {
         element.response = "two"
-
-      if (element.response === 3)
+      } else if (element.response === 3) {
         element.response = "three"
-
-      if (element.response === 4)
+      } else if (element.response === 4) {
         element.response = "four"
+      } else {
+        element.response = "negative"
+      }
     });
 
-    user.responses = selected
+    let resp = []
+    if (typeof user.responses !== 'undefined' && user.responses.length > 0) {
+      resp = [...user.responses]
+    }
+
+    let subs = [...selected]
+    console.log('subs', subs);
+
+    respOb = {}
+    resp.forEach(ele => {
+      respOb[ele['question']] = ele['response']
+    })
+
+    subsOb = {}
+    subs.forEach(ele => {
+      subsOb[ele['question']] = ele['response']
+    })
+
+    respObj = {
+      ...respOb,
+      ...subsOb
+    }
+
+    let finalResp = []
+    Object.keys(respObj).forEach(ele => {
+      ob = {}
+      ob['question'] = ele
+      ob['response'] = respObj[ele]
+      finalResp.push(ob)
+    })
+
+    console.log('finalResp', finalResp);
+
+    user.responses = finalResp
     await user.save()
     return res.status(200).json({msg: "Success"})
 
