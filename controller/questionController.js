@@ -167,14 +167,12 @@ exports.saveResponses = async (req, res, next) => {
         element.response = "negative"
       }
     });
-
+    
+    let subs = [...selected]
     let resp = []
     if (typeof user.responses !== 'undefined' && user.responses.length > 0) {
       resp = [...user.responses]
     }
-
-    let subs = [...selected]
-    console.log('subs', subs);
 
     respOb = {}
     resp.forEach(ele => {
@@ -198,8 +196,6 @@ exports.saveResponses = async (req, res, next) => {
       ob['response'] = respObj[ele]
       finalResp.push(ob)
     })
-
-    console.log('finalResp', finalResp);
 
     user.responses = finalResp
     await user.save()
