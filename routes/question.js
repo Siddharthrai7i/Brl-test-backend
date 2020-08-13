@@ -48,12 +48,12 @@ router.post(
 // @access  Private
 router.post(
   "/submit-feedback",
-  [authStudent, [
+  [
     body("quality", "Please select the quality good/average/bad").exists(),
     body("name", "enter your name").exists(),
     body("email", "email is required").isEmail(),
     body("feedback", "please enter feedback").isString()
-  ]],
+  ],
   questionController.saveFeedback
 );
 
