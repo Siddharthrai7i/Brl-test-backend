@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../model/User");
 const Question = require("../model/Question");
+const Feedback = require('../model/Feedback')
 
 
 exports.postCheckAnswers = (req, res, next) => {
@@ -203,5 +204,29 @@ exports.saveResponses = async (req, res, next) => {
 
   } catch (err) {
     res.status(500).json({ error: "Server Error" });
+  }
+}
+
+
+// save feedback
+exports.saveFeedback = async (req, res, next) => {
+  
+  try {
+    const user = req.user.id
+    const {feedback, quality, name, email} = req.body;
+
+    const payload = new Feedback({
+      user,
+      quality,
+      name,
+      email,
+      feedback
+    })
+
+    payload.save()
+    return res.status(200).json({'msg': 'Success'})
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({'msg': 'Failure'})
   }
 }

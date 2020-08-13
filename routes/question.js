@@ -2,6 +2,8 @@ const express = require("express");
 const { authStudent } = require("../controller/authController");
 const questionController = require("../controller/questionController");
 const router = express.Router();
+const {body} = require("express-validator");
+
 router.post("/check-answers", questionController.postCheckAnswers);
 
 // @route   POST /add-question
@@ -30,6 +32,20 @@ router.post(
     "/submit-responses",
     authStudent,
     questionController.saveResponses
+);
+
+// @route   POST /submit-feedback
+// @desc    records feedback
+// @access  Private
+router.post(
+  "/submit-feedback",
+  [authStudent, [
+    body("quality", "Please select the quality good/average/bad").exists(),
+    body("name", "enter your name").exists(),
+    body("email", "email is required").isEmail(),
+    body("feedback", "please enter feedback").isString()
+  ]],
+  questionController.saveFeedback
 );
 
 module.exports = router;
