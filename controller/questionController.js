@@ -154,7 +154,7 @@ exports.saveResponses = async (req, res, next) => {
     const user = await User.findById(req.user.id)
 
     selected = req.body.responses
-    
+
     selected.forEach(element => {
       if (element.response === 1) {
         element.response = "one"
@@ -195,6 +195,7 @@ exports.saveResponses = async (req, res, next) => {
       ob = {}
       ob['question'] = ele
       ob['response'] = respObj[ele]
+      ob['status'] = "saved"
       finalResp.push(ob)
     })
 
@@ -228,5 +229,57 @@ exports.saveFeedback = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(401).json({'msg': 'Failure'})
+  }
+}
+
+
+// endTest
+exports.endTest = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+
+    const selected = req.body.responses
+    
+    selected.forEach(element => {
+      if (element.response === 1) {
+        element.response = "one"
+      } else if (element.response === 2) {
+        element.response = "two"
+      } else if (element.response === 3) {
+        element.response = "three"
+      } else if (element.response === 4) {
+        element.response = "four"
+      } else {
+        element.response = "negative"
+      }
+    });
+    
+    let subs = [...selected]
+    let resp = []
+    if (typeof user.responses !== 'undefined' && user.responses.length > 0) {
+      resp = [...user.responses]
+    }
+
+    const previousAttempted = []
+    resp.forEach(ele => {
+      previousAttempted.push(ele['question'])
+    })
+
+    const respToSave = subs.filter(ele => {
+      return !previousAttempted.includes(ele.question)
+    })
+
+    respToSave.forEach(ele => {
+      ele.status = "marked"
+    })
+
+    const finalResp = [...resp, ...respToSave]
+
+    user.responses = finalResp
+    await user.save()
+    return res.status(200).json({msg: "Success"})
+
+  } catch (err) {
+    return res.status(500).json({ error: "Server Error" });
   }
 }

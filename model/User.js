@@ -33,6 +33,19 @@ const userSchema = new mongoose.Schema(
         },
         response: {
           type: String
+        },
+        status: {
+          type: String
+        }
+      }
+    ],
+    endResponses: [
+      {
+        question: {
+          type: String
+        },
+        response: {
+          type: String
         }
       }
     ]

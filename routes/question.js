@@ -34,6 +34,15 @@ router.post(
     questionController.saveResponses
 );
 
+// @route   POST /end-test
+// @desc    Store selected answers
+// @access  Private
+router.post(
+  "/end-test",
+  authStudent,
+  questionController.endTest
+);
+
 // @route   POST /submit-feedback
 // @desc    records feedback
 // @access  Private
