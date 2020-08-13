@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: String,
+      type: Number,
     },
     email: {
       type: String,
@@ -16,10 +16,25 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     rollNumber: {
-      type: String,
+      type: Number
     },
     branch: {
       type: String,
+    },
+    studentNumber: {
+      type: Number
+    },
+    whatsAppNumber: {
+      type: Number
+    },
+    github: {
+      type: String
+    },
+    behance: {
+      type: String
+    },
+    skills: {
+      type: String
     },
     questions: [
       {
