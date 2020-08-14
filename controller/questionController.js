@@ -213,11 +213,9 @@ exports.saveResponses = async (req, res, next) => {
 exports.saveFeedback = async (req, res, next) => {
   
   try {
-    const user = req.user.id
     const {feedback, quality, name, email} = req.body;
 
     const payload = new Feedback({
-      user,
       quality,
       name,
       email,

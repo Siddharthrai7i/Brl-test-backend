@@ -22,8 +22,7 @@ exports.loginStudent = (req, res) => {
   const { rollNumber, password } = req.body;
   User.findOne({ rollNumber }).then((user) => {
     if (user) {
-      user.comparePassword(password, function (err, isMatch) {
-        if (isMatch && !err) {
+        if (user.password === password) {
           jwt.sign(
             { user: { id: user.id } },
             process.env.TOKEN_SECRET,
@@ -35,7 +34,6 @@ exports.loginStudent = (req, res) => {
         } else {
           res.status(401).json({ error: "Invalid Password" });
         }
-      });
     } else {
       res.status(400).json({ error: "Invalid User" });
     }
