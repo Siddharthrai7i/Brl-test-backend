@@ -25,3 +25,20 @@ exports.addUser = async (req, res) => {
 
   res.status(200).json({ user });
 };
+
+
+exports.unfair = async(req,res,next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    var x = user.switchCounter;
+    user.switchCounter = ++x;
+    await user.save();
+    res.status(200).json({
+      user
+    });
+  } catch(err) {
+    console.log(err);
+    res.status(400);
+  }
+
+}

@@ -40,4 +40,6 @@ router.post(
   authController.loginStudent
 );
 
+
+router.route('/unfairAttempt').patch(authController.authStudent,userController.unfair);
 module.exports = router;

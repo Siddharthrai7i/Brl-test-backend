@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: Number,
+      type: Number
     },
     email: {
       type: String,
@@ -35,6 +35,14 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: String
+    },
+    isLoggedIn: {
+      type: Boolean,
+      default: false,
+    },
+    switchCounter:{
+      type: Number,
+      default:0
     },
     questions: [
       {

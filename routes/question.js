@@ -1,8 +1,10 @@
 const express = require("express");
-const { authStudent } = require("../controller/authController");
+const { authStudent, checkStartTime, checkEndTime } = require("../controller/authController");
 const questionController = require("../controller/questionController");
 const router = express.Router();
 const {body} = require("express-validator");
+
+router.get('/time', checkStartTime);
 
 router.post("/check-answers", questionController.postCheckAnswers);
 
@@ -14,7 +16,7 @@ router.post("/add-question", questionController.addQuestions);
 // @route   POST /get-questions
 // @desc    Get 10 random questions
 // @access  Private
-router.get("/get-questions", authStudent, questionController.getQuestions);
+router.get("/get-questions", authStudent,checkStartTime, questionController.getQuestions);
 
 // @route   POST /return-questions
 // @desc    Get 10 random questions
@@ -30,7 +32,7 @@ router.get(
 // @access  Private
 router.post(
     "/submit-responses",
-    authStudent,
+    authStudent, checkEndTime,
     questionController.saveResponses
 );
 
