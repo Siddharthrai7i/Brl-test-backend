@@ -133,20 +133,68 @@ exports.getQuestions = async (req, res, next) => {
 
   try {
   
-  const res_questions = await Question.aggregate([
-    {
-      $facet: {
-        html: [{ $match: { category: "html" } }, { $sample: { size: 1 } }],
-        css: [{ $match: { category: "css" } }, { $sample: { size: 1 } }],
-        apti: [{ $match: { category: "apti" } }, { $sample: { size: 1 } }],
-        blockchain: [
-          { $match: { category: "blockchain" } },
-          { $sample: { size: 1 } },
-        ],
-        language: [{ $match: { category: "c" } }, { $sample: { size: 1 } }],
-      },
+const res_questions = await Question.aggregate([
+  {
+    $facet: {
+      html: [
+        { $match: { category: "html" } },
+        { $sample: { size: 5 } },
+        {
+          $project: {
+            _id: 1,
+            question: 1,
+            options: ["$one", "$two", "$three", "$four"],
+          },
+        },
+      ],
+      css: [
+        { $match: { category: "css" } },
+        { $sample: { size: 5 } },
+        {
+          $project: {
+            _id: 1,
+            question: 1,
+            options: ["$one", "$two", "$three", "$four"],
+          },
+        },
+      ],
+      apti: [
+        { $match: { category: "apti" } },
+        { $sample: { size: 5 } },
+        {
+          $project: {
+            _id: 1,
+            question: 1,
+            options: ["$one", "$two", "$three", "$four"],
+          },
+        },
+      ],
+      blockchain: [
+        { $match: { category: "blockchain" } },
+        { $sample: { size: 5 } },
+        {
+          $project: {
+            _id: 1,
+            question: 1,
+            options: ["$one", "$two", "$three", "$four"],
+          },
+        },
+      ],
+      language: [
+        { $match: { category: req.query.category } },
+        { $sample: { size: 5 } },
+        {
+          $project: {
+            _id: 1,
+            question: 1,
+            options: ["$one", "$two", "$three", "$four"],
+          },
+        },
+      ],
     },
-  ]);
+  },
+]);
+
 
 
   const temp_html = await res_questions[0]['html'].map((item) =>
@@ -173,7 +221,7 @@ exports.getQuestions = async (req, res, next) => {
   user.questions = temp_questions_arr;
   user.save();
 
-  let ret_questions = [...res_questions[0].html, ...res_questions[1].html, ...res_questions[2].html, ...res_questions[3].html, ...res_questions[4].html]
+  let ret_questions = [...res_questions[0].html, ...res_questions[0].css, ...res_questions[0].apti, ...res_questions[0].blockchain, ...res_questions[0].language]
 
   return res.status(200).json({ 'res_questions': ret_questions });
   } catch (err) {
