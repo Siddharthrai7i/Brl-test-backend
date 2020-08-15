@@ -93,36 +93,96 @@ exports.returnQuestions = async (req, res, next) => {
   return res.status(200).json({ res_questions: result[0].questionsDetails });
 };
 
+// to get questions (old)
+// exports.getQuestions = async (req, res, next) => {
+//   const user = await User.findById(req.user.id);
 
+//   // If user already has the questions
+//   if (user.questions.length === 10) {
+//     return res.redirect("/return-questions");
+//   }
+
+//   const res_questions = await Question.aggregate([
+//     { $sample: { size: 10 } },
+//     {
+//       $project: {
+//         _id: 1,
+//         question: 1,
+//         options: ["$one", "$two", "$three", "$four"],
+//       },
+//     },
+//   ]);
+
+//   const temp_questions_arr = await res_questions.map((item) =>
+//     item._id.toString()
+//   );
+//   user.questions = temp_questions_arr;
+//   user.save();
+
+//   return res.status(200).json({ res_questions });
+// };
+
+// get 25 questions
 exports.getQuestions = async (req, res, next) => {
   const user = await User.findById(req.user.id);
 
   // If user already has the questions
-  if (user.questions.length === 10) {
+  if (user.questions.length === 25) {
     return res.redirect("/return-questions");
   }
 
+  try {
+  
   const res_questions = await Question.aggregate([
-    { $sample: { size: 10 } },
     {
-      $project: {
-        _id: 1,
-        question: 1,
-        options: ["$one", "$two", "$three", "$four"],
+      $facet: {
+        html: [{ $match: { category: "html" } }, { $sample: { size: 1 } }],
+        css: [{ $match: { category: "css" } }, { $sample: { size: 1 } }],
+        apti: [{ $match: { category: "apti" } }, { $sample: { size: 1 } }],
+        blockchain: [
+          { $match: { category: "blockchain" } },
+          { $sample: { size: 1 } },
+        ],
+        language: [{ $match: { category: "c" } }, { $sample: { size: 1 } }],
       },
     },
   ]);
 
-  const temp_questions_arr = await res_questions.map((item) =>
+
+  const temp_html = await res_questions[0]['html'].map((item) =>
     item._id.toString()
   );
+
+  const temp_css = await res_questions[0]['css'].map((item) =>
+    item._id.toString()
+  );
+
+  const temp_apti = await res_questions[0]['apti'].map((item) =>
+    item._id.toString()
+  );
+
+  const temp_block = await res_questions[0]['blockchain'].map((item) =>
+    item._id.toString()
+  );
+
+  const temp_lang = await res_questions[0]['language'].map((item) =>
+    item._id.toString()
+  );
+  
+  let temp_questions_arr = [... temp_html, ...temp_lang, ...temp_css, ...temp_apti, ...temp_block]
   user.questions = temp_questions_arr;
   user.save();
 
-  return res.status(200).json({ res_questions });
+  let ret_questions = [...res_questions[0].html, ...res_questions[1].html, ...res_questions[2].html, ...res_questions[3].html, ...res_questions[4].html]
+
+  return res.status(200).json({ 'res_questions': ret_questions });
+  } catch (err) {
+    return res.status(500).json({ 'err': 'server error' });
+  }
 };
 
 
+// to add questions
 exports.addQuestions = async (req, res) => {
   const { question, one, two, three, four, correct } = req.body;
 
