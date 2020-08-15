@@ -60,22 +60,22 @@ exports.authStudent = (req, res, next) => {
 };
 
 exports.checkStartTime = (req,res,next) => {
-  if(Date.now() >= Date.UTC(2020,07,18,08,30)) {
+ // if(Date.now() >= Date.UTC(2020,07,18,08,30)) {
     next();
-  } else {
-    res.status(400).json({
-      message: "Test Has not Been Started"
-    });
-  }
+  //} else {
+  //  res.status(400).json({
+  //    message: "Test Has not Been Started"
+   // });
+ // }
 
 }
 
 exports.checkEndTime = (req,res,next) => {
-  if (Date.now() <= Date.UTC(2020,07,18,09,10)){
+//  if (Date.now() <= Date.UTC(2020,07,18,09,10)){
     next();
-  } else {
-    res.status(400).json({
-      message: "Test has Ended"
-    });
-  }
+//  } else {
+//    res.status(400).json({
+//      message: "Test has Ended"
+//    });
+//  }
 }
