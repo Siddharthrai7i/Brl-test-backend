@@ -48,7 +48,7 @@ exports.loginStudent = (req, res) => {
   });
 };
 
-exports.authStudent = (req, res, next) => {
+exports.authStudent = async (req, res, next) => {
   var result = await checkToken(req);
   if (result.success === true && result.token != undefined) {
     try {
@@ -57,10 +57,14 @@ exports.authStudent = (req, res, next) => {
         req.user = decoded.user;
         next();
       } else {
-        return res.status(401).json({ success: false , msg: "Token Is Not Valid" });
+        return res
+          .status(401)
+          .json({ success: false, msg: "Token Is Not Valid" });
       }
     } catch (ex) {
-      return res.status(403).json({ success: false , msg: "Token Is Not Valid" });
+      return res
+        .status(403)
+        .json({ success: false, msg: "Token Is Not Valid" });
     }
   } else {
     return res.status(403).json({ success: false, msg: "Token Is Not Valid" });
