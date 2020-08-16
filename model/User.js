@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -7,7 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: Number
+      type: Number,
     },
     email: {
       type: String,
@@ -16,33 +15,33 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     rollNumber: {
-      type: Number
+      type: Number,
     },
     branch: {
       type: String,
     },
     studentNumber: {
-      type: Number
+      type: Number,
     },
     whatsAppNumber: {
-      type: Number
+      type: Number,
     },
     github: {
-      type: String
+      type: String,
     },
     behance: {
-      type: String
+      type: String,
     },
     skills: {
-      type: String
+      type: String,
     },
     isLoggedIn: {
       type: Boolean,
       default: false,
     },
-    switchCounter:{
+    switchCounter: {
       type: Number,
-      default:0
+      default: 0,
     },
     questions: [
       {
@@ -52,52 +51,18 @@ const userSchema = new mongoose.Schema(
     responses: [
       {
         question: {
-          type: String
+          type: String,
         },
         response: {
-          type: String
+          type: String,
         },
         status: {
-          type: String
-        }
-      }
-    ],
-    endResponses: [
-      {
-        question: {
-          type: String
+          type: String,
         },
-        response: {
-          type: String
-        }
-      }
-    ]
+      },
+    ],
   },
   { timestamps: true }
 );
-
-
-// userSchema.pre("save", function (next) {
-//   var user = this;
-//   if (!user.isModified("password")) return next();
-//   bcrypt.genSalt(10, function (err, salt) {
-//     if (err) return next(err);
-//     bcrypt.hash(user.password, salt, function (err, hash) {
-//       if (err) return next(err);
-//       user.password = hash;
-//       next();
-//     });
-//   });
-// });
-
-// userSchema.methods.comparePassword = function (password, next) {
-//   bcrypt.compare(password, this.password, function (err, isMatch) {
-//     if (err) {
-//       console.log(err);
-//       return next(err);
-//     }
-//     next(null, isMatch);
-//   });
-// };
 
 module.exports = User = mongoose.model("User", userSchema);

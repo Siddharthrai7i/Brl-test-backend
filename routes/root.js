@@ -2,6 +2,7 @@ const router = require("express").Router();
 const utilController = require("../controller/utilController");
 const userController = require("../controller/userController");
 const authController = require("../controller/authController");
+const { checkStartTime } = require("../controller/authController");
 const { body } = require("express-validator");
 
 // const auth = require('../middleware/auth')
@@ -40,6 +41,5 @@ router.post(
   authController.loginStudent
 );
 
-
-router.route('/unfairAttempt').patch(authController.authStudent,userController.unfair);
+router.get("/time", checkStartTime);
 module.exports = router;

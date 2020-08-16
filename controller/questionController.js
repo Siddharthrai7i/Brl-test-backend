@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../model/User");
 const Question = require("../model/Question");
-const Feedback = require('../model/Feedback')
-
 
 exports.postCheckAnswers = (req, res, next) => {
   let token = req.headers["authorization"];
@@ -64,7 +62,6 @@ exports.postCheckAnswers = (req, res, next) => {
   });
 };
 
-
 exports.returnQuestions = async (req, res, next) => {
   const result = await User.aggregate([
     { $match: { _id: ObjectId(req.user.id) } },
@@ -93,142 +90,120 @@ exports.returnQuestions = async (req, res, next) => {
   return res.status(200).json({ res_questions: result[0].questionsDetails });
 };
 
-// to get questions (old)
-// exports.getQuestions = async (req, res, next) => {
-//   const user = await User.findById(req.user.id);
-
-//   // If user already has the questions
-//   if (user.questions.length === 10) {
-//     return res.redirect("/return-questions");
-//   }
-
-//   const res_questions = await Question.aggregate([
-//     { $sample: { size: 10 } },
-//     {
-//       $project: {
-//         _id: 1,
-//         question: 1,
-//         options: ["$one", "$two", "$three", "$four"],
-//       },
-//     },
-//   ]);
-
-//   const temp_questions_arr = await res_questions.map((item) =>
-//     item._id.toString()
-//   );
-//   user.questions = temp_questions_arr;
-//   user.save();
-
-//   return res.status(200).json({ res_questions });
-// };
-
 // get 25 questions
 exports.getQuestions = async (req, res, next) => {
   const user = await User.findById(req.user.id);
-
+  console.log(req.query.category);
   // If user already has the questions
-  if (user.questions.length === 25) {
+  if (user.questions.length != 0) {
     return res.redirect("/return-questions");
   }
 
   try {
-  
-const res_questions = await Question.aggregate([
-  {
-    $facet: {
-      html: [
-        { $match: { category: "html" } },
-        { $sample: { size: 5 } },
-        {
-          $project: {
-            _id: 1,
-            question: 1,
-            options: ["$one", "$two", "$three", "$four"],
-          },
+    const res_questions = await Question.aggregate([
+      {
+        $facet: {
+          html: [
+            { $match: { category: "html" } },
+            { $sample: { size: 5 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          css: [
+            { $match: { category: "css" } },
+            { $sample: { size: 5 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          apti: [
+            { $match: { category: "apti" } },
+            { $sample: { size: 5 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          blockchain: [
+            { $match: { category: "blockchain" } },
+            { $sample: { size: 5 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          language: [
+            { $match: { category: req.query.category } },
+            { $sample: { size: 5 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
         },
-      ],
-      css: [
-        { $match: { category: "css" } },
-        { $sample: { size: 5 } },
-        {
-          $project: {
-            _id: 1,
-            question: 1,
-            options: ["$one", "$two", "$three", "$four"],
-          },
-        },
-      ],
-      apti: [
-        { $match: { category: "apti" } },
-        { $sample: { size: 5 } },
-        {
-          $project: {
-            _id: 1,
-            question: 1,
-            options: ["$one", "$two", "$three", "$four"],
-          },
-        },
-      ],
-      blockchain: [
-        { $match: { category: "blockchain" } },
-        { $sample: { size: 5 } },
-        {
-          $project: {
-            _id: 1,
-            question: 1,
-            options: ["$one", "$two", "$three", "$four"],
-          },
-        },
-      ],
-      language: [
-        { $match: { category: req.query.category } },
-        { $sample: { size: 5 } },
-        {
-          $project: {
-            _id: 1,
-            question: 1,
-            options: ["$one", "$two", "$three", "$four"],
-          },
-        },
-      ],
-    },
-  },
-]);
+      },
+    ]);
 
+    const temp_html = await res_questions[0]["html"].map((item) =>
+      item._id.toString()
+    );
 
+    const temp_css = await res_questions[0]["css"].map((item) =>
+      item._id.toString()
+    );
 
-  const temp_html = await res_questions[0]['html'].map((item) =>
-    item._id.toString()
-  );
+    const temp_apti = await res_questions[0]["apti"].map((item) =>
+      item._id.toString()
+    );
 
-  const temp_css = await res_questions[0]['css'].map((item) =>
-    item._id.toString()
-  );
+    const temp_block = await res_questions[0]["blockchain"].map((item) =>
+      item._id.toString()
+    );
 
-  const temp_apti = await res_questions[0]['apti'].map((item) =>
-    item._id.toString()
-  );
+    const temp_lang = await res_questions[0]["language"].map((item) =>
+      item._id.toString()
+    );
 
-  const temp_block = await res_questions[0]['blockchain'].map((item) =>
-    item._id.toString()
-  );
+    let temp_questions_arr = [
+      ...temp_html,
+      ...temp_lang,
+      ...temp_css,
+      ...temp_apti,
+      ...temp_block,
+    ];
+    user.questions = temp_questions_arr;
+    user.save();
 
-  const temp_lang = await res_questions[0]['language'].map((item) =>
-    item._id.toString()
-  );
-  
-  let temp_questions_arr = [... temp_html, ...temp_lang, ...temp_css, ...temp_apti, ...temp_block]
-  user.questions = temp_questions_arr;
-  user.save();
-
-  let ret_questions = [...res_questions[0].html, ...res_questions[0].css, ...res_questions[0].apti, ...res_questions[0].blockchain, ...res_questions[0].language]
-
-  return res.status(200).json({ 'res_questions': ret_questions });
+    let ret_questions = [
+      ...res_questions[0].html,
+      ...res_questions[0].css,
+      ...res_questions[0].apti,
+      ...res_questions[0].blockchain,
+      ...res_questions[0].language,
+    ];
+    return res.status(200).json({ res_questions: ret_questions });
   } catch (err) {
-    return res.status(500).json({ 'err': 'server error' });
+    return res.status(500).json({ err: "server error" });
   }
 };
-
 
 // to add questions
 exports.addQuestions = async (req, res) => {
@@ -254,138 +229,111 @@ exports.addQuestions = async (req, res) => {
   }
 };
 
-
 // store responses
 exports.saveResponses = async (req, res, next) => {
-
   try {
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id);
 
-    selected = req.body.responses
+    selected = req.body.responses;
 
-    selected.forEach(element => {
+    selected.forEach((element) => {
       if (element.response === 1) {
-        element.response = "one"
+        element.response = "one";
       } else if (element.response === 2) {
-        element.response = "two"
+        element.response = "two";
       } else if (element.response === 3) {
-        element.response = "three"
+        element.response = "three";
       } else if (element.response === 4) {
-        element.response = "four"
+        element.response = "four";
       } else {
-        element.response = "negative"
+        element.response = "negative";
       }
     });
-    
-    let subs = [...selected]
-    let resp = []
-    if (typeof user.responses !== 'undefined' && user.responses.length > 0) {
-      resp = [...user.responses]
+
+    let subs = [...selected];
+    let resp = [];
+    if (typeof user.responses !== "undefined" && user.responses.length > 0) {
+      resp = [...user.responses];
     }
 
-    respOb = {}
-    resp.forEach(ele => {
-      respOb[ele['question']] = ele['response']
-    })
+    respOb = {};
+    resp.forEach((ele) => {
+      respOb[ele["question"]] = ele["response"];
+    });
 
-    subsOb = {}
-    subs.forEach(ele => {
-      subsOb[ele['question']] = ele['response']
-    })
+    subsOb = {};
+    subs.forEach((ele) => {
+      subsOb[ele["question"]] = ele["response"];
+    });
 
     respObj = {
       ...respOb,
-      ...subsOb
-    }
+      ...subsOb,
+    };
 
-    let finalResp = []
-    Object.keys(respObj).forEach(ele => {
-      ob = {}
-      ob['question'] = ele
-      ob['response'] = respObj[ele]
-      ob['status'] = "saved"
-      finalResp.push(ob)
-    })
+    let finalResp = [];
+    Object.keys(respObj).forEach((ele) => {
+      ob = {};
+      ob["question"] = ele;
+      ob["response"] = respObj[ele];
+      ob["status"] = "saved";
+      finalResp.push(ob);
+    });
 
-    user.responses = finalResp
-    await user.save()
-    return res.status(200).json({msg: "Success"})
-
+    user.responses = finalResp;
+    await user.save();
+    return res.status(200).json({ msg: "Success" });
   } catch (err) {
     res.status(500).json({ error: "Server Error" });
   }
-}
-
-
-// save feedback
-exports.saveFeedback = async (req, res, next) => {
-  
-  try {
-    const {feedback, quality, name, email} = req.body;
-
-    const payload = new Feedback({
-      quality,
-      name,
-      email,
-      feedback
-    })
-
-    payload.save()
-    return res.status(200).json({'msg': 'Success'})
-  } catch (err) {
-    console.log(err);
-    return res.status(401).json({'msg': 'Failure'})
-  }
-}
-
+};
 
 // endTest
 exports.endTest = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id);
 
-    const selected = req.body.responses
-    
-    selected.forEach(element => {
+    const selected = req.body.responses;
+
+    selected.forEach((element) => {
       if (element.response === 1) {
-        element.response = "one"
+        element.response = "one";
       } else if (element.response === 2) {
-        element.response = "two"
+        element.response = "two";
       } else if (element.response === 3) {
-        element.response = "three"
+        element.response = "three";
       } else if (element.response === 4) {
-        element.response = "four"
+        element.response = "four";
       } else {
-        element.response = "negative"
+        element.response = "negative";
       }
     });
-    
-    let subs = [...selected]
-    let resp = []
-    if (typeof user.responses !== 'undefined' && user.responses.length > 0) {
-      resp = [...user.responses]
+
+    let subs = [...selected];
+    let resp = [];
+    if (typeof user.responses !== "undefined" && user.responses.length > 0) {
+      resp = [...user.responses];
     }
 
-    const previousAttempted = []
-    resp.forEach(ele => {
-      previousAttempted.push(ele['question'])
-    })
+    const previousAttempted = [];
+    resp.forEach((ele) => {
+      previousAttempted.push(ele["question"]);
+    });
 
-    const respToSave = subs.filter(ele => {
-      return !previousAttempted.includes(ele.question)
-    })
+    const respToSave = subs.filter((ele) => {
+      return !previousAttempted.includes(ele.question);
+    });
 
-    respToSave.forEach(ele => {
-      ele.status = "marked"
-    })
+    respToSave.forEach((ele) => {
+      ele.status = "marked";
+    });
 
-    const finalResp = [...resp, ...respToSave]
+    const finalResp = [...resp, ...respToSave];
 
-    user.responses = finalResp
-    await user.save()
-    return res.status(200).json({msg: "Success"})
-
+    user.responses = finalResp;
+    await user.save();
+    return res.status(200).json({ msg: "Success" });
   } catch (err) {
     return res.status(500).json({ error: "Server Error" });
   }
-}
+};
