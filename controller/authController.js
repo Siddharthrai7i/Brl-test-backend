@@ -72,21 +72,21 @@ exports.authStudent = async (req, res, next) => {
 };
 
 exports.checkStartTime = (req, res, next) => {
-  // if(Date.now() >= Date.UTC(2020,07,18,08,30)) {
-  next();
-  //} else {
-  //  res.status(400).json({
-  //    message: "Test Not Yet Started"
-  // });
-  // }
+  if (Date.now() >= Date.UTC(2020, 07, 18, 08, 30)) {
+    next();
+  } else {
+    res.status(400).json({
+      message: "Test Not Yet Started",
+    });
+  }
 };
 
 exports.checkEndTime = (req, res, next) => {
-  //  if (Date.now() <= Date.UTC(2020,07,18,09,10)){
-  next();
-  //  } else {
-  //    res.status(400).json({
-  //      message: "Test has Ended"
-  //    });
-  //  }
+  if (Date.now() <= Date.UTC(2020, 07, 18, 09, 10)) {
+    next();
+  } else {
+    res.status(400).json({
+      message: "Test has Ended",
+    });
+  }
 };

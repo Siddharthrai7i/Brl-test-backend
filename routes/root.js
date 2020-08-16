@@ -2,7 +2,7 @@ const router = require("express").Router();
 const utilController = require("../controller/utilController");
 const userController = require("../controller/userController");
 const authController = require("../controller/authController");
-const { checkStartTime } = require("../controller/authController");
+const moment = require("moment-timezone");
 const { body } = require("express-validator");
 
 // const auth = require('../middleware/auth')
@@ -41,5 +41,13 @@ router.post(
   authController.loginStudent
 );
 
-router.get("/time", checkStartTime);
+router.get("/time", (req, res) => {
+  var d = Date.UTC(2020, 07, 18, 08, 30);
+  res.status(200).json({
+    success: true,
+    epoch: d,
+    time: new Date(d).toUTCString(),
+    India: moment.unix(d / 1000).tz("Asia/Kolkata").toLocaleString(),
+  });
+});
 module.exports = router;
