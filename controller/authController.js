@@ -52,7 +52,7 @@ exports.authStudent = async (req, res, next) => {
   var result = await checkToken(req);
   if (result.success === true && result.token != undefined) {
     try {
-      const decoded = await jwt.verify(result.token, process.env.jwtSecret);
+      const decoded = await jwt.verify(result.token, process.env.TOKEN_SECRET);
       if (decoded.user) {
         req.user = decoded.user;
         next();
