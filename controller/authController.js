@@ -72,7 +72,8 @@ exports.authStudent = async (req, res, next) => {
 };
 
 exports.checkStartTime = (req, res, next) => {
-  if (Date.now() >= ((process.env.TESTENDTIME * 1) - 1800000)) {// end time - 30 minutes i.e 4:00 PM IST of 18 Aug
+  if (Date.now() >= process.env.TESTENDTIME * 1 - 1800000) {
+    // end time - 30 minutes i.e 4:00 PM IST of 18 Aug
     next();
   } else {
     res.status(400).json({
@@ -82,7 +83,8 @@ exports.checkStartTime = (req, res, next) => {
 };
 
 exports.checkEndTime = (req, res, next) => {
-  if (Date.now() <= process.env.TESTENDTIME * 1) { //end time i.e 4:30 PM IST of 18 Aug 
+  if (Date.now() <= process.env.TESTENDTIME * 1) {
+    //end time i.e 4:30 PM IST of 18 Aug
     next();
   } else {
     res.status(400).json({
@@ -91,13 +93,15 @@ exports.checkEndTime = (req, res, next) => {
   }
 };
 
-exports.remainingTime = (req,res,next) => {
+exports.remainingTime = (req, res, next) => {
   // var testEndTime = Date.UTC(2020,07,18,11,10);
   var testStartTime = Date.now();
-  var remainingTime = (new Date(process.env.TESTENDTIME*1).getMinutes()) - (new Date(testStartTime).getMinutes())
+  var remainingTime =
+    new Date(process.env.TESTENDTIME * 1).getUTCMinutes() -
+    new Date(testStartTime).getUTCMinutes();
   if (remainingTime < 0) {
     remainingTime = 0;
   }
-  req.remainingTime = remainingTime
+  req.remainingTime = remainingTime;
   next();
-}
+};

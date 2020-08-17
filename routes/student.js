@@ -2,7 +2,7 @@ const express = require("express");
 const {
   checkEndTime,
   checkStartTime,
-  remainingTime
+  remainingTime,
 } = require("../controller/authController");
 const feedbackController = require("../controller/feedbackController");
 const questionController = require("../controller/questionController");
@@ -13,13 +13,19 @@ const { body } = require("express-validator");
 
 // @route   POST /get-questions
 // @desc    Get 10 random questions
-router.get("/get-questions", checkStartTime, remainingTime, questionController.getQuestions);
+router.get(
+  "/get-questions",
+  checkStartTime,
+  remainingTime,
+  questionController.getQuestions
+);
 
 // @route   POST /return-questions
 // @desc    Get 10 random questions
 router.get(
   "/return-questions",
-  checkStartTime, remainingTime,
+  checkStartTime,
+  remainingTime,
   questionController.returnQuestions
 );
 
