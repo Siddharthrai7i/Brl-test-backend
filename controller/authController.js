@@ -98,7 +98,7 @@ exports.remainingTime = (req, res, next) => {
   var testStartTime = Date.now();
   var remainingTime = parseInt(process.env.TESTENDTIME) - testStartTime;
   minutes = Math.floor(remainingTime / 60000);
-  seconds = Math.floor(remainingTime / 1000);
+  seconds = Math.floor(remainingTime % 60000);
   if (minutes < 0 || seconds < 0) {
     minutes = 0;
     seconds = 0;
