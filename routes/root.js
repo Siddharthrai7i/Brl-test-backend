@@ -42,7 +42,7 @@ router.post(
 );
 
 router.get("/time", (req, res) => {
-  var d = Date.UTC(2020, 07, 18, 08, 30);
+  var d = 1597678200000;
   res.status(200).json({
     success: true,
     epoch: d,
