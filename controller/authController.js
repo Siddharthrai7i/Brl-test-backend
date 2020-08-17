@@ -103,6 +103,6 @@ exports.remainingTime = (req, res, next) => {
     minutes = 0;
     seconds = 0;
   }
-  req.timer = { minutes: minutes, seconds: seconds };
+  req.time = { minutes: minutes, seconds: seconds };
   next();
 };
