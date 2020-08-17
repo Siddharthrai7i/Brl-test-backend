@@ -87,7 +87,7 @@ exports.returnQuestions = async (req, res, next) => {
       },
     },
   ]);
-  return res.status(200).json({ res_questions: result[0].questionsDetails });
+  return res.status(200).json({ res_questions: result[0].questionsDetails, remainingTime: req.remainingTime });
 };
 
 // get 25 questions
@@ -199,7 +199,7 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].blockchain,
       ...res_questions[0].language,
     ];
-    return res.status(200).json({ res_questions: ret_questions });
+    return res.status(200).json({ res_questions: ret_questions, remainingTime: req.remainingTime });
   } catch (err) {
     return res.status(500).json({ err: "server error" });
   }
