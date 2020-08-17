@@ -45,7 +45,7 @@ db.users.aggregate([
     },
   },
   {
-    $out: "flat",
+    $out: "result",
   },
 ]);
 
