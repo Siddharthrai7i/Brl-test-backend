@@ -42,7 +42,7 @@ router.post(
 );
 
 router.get("/time", (req, res) => {
-  var d = 1597678200000;
+  var d = 1597675200000;
   res.status(200).json({
     success: true,
     epoch: d,
