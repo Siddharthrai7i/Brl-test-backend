@@ -26,7 +26,7 @@ exports.loginStudent = (req, res) => {
               await user.save();
               res.json({
                 token: token,
-                timer: {
+                time: {
                   hours: 00,
                   minutes: 30,
                   seconds: 00,
@@ -97,10 +97,12 @@ exports.remainingTime = (req, res, next) => {
   // var testEndTime = Date.UTC(2020,07,18,11,10);
   var testStartTime = Date.now();
   var remainingTime = parseInt(process.env.TESTENDTIME) - testStartTime;
-  remainingTime = remainingTime / 60000;
-  if (remainingTime < 0) {
-    remainingTime = 0;
+  minutes = Math.floor(remainingTime / 60000);
+  seconds = Math.floor(remainingTime / 1000);
+  if (minutes < 0 || seconds < 0) {
+    minutes = 0;
+    seconds = 0;
   }
-  req.remainingTime = remainingTime;
+  req.timer = { minutes: minutes, seconds: seconds };
   next();
 };
