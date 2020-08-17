@@ -96,7 +96,7 @@ exports.getQuestions = async (req, res, next) => {
   console.log(req.query.category);
   // If user already has the questions
   if (user.questions.length != 0) {
-    return res.redirect("/return-questions");
+    return res.redirect("/student/return-questions");
   }
 
   try {
