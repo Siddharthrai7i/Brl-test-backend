@@ -82,7 +82,7 @@ exports.checkStartTime = (req, res, next) => {
 };
 
 exports.checkEndTime = (req, res, next) => {
-  if (Date.now() <= Date.UTC(2020, 07, 18, 10, 10)) {
+  if (Date.now() <= Date.UTC(2020, 07, 17, 10, 10)) {
     next();
   } else {
     res.status(400).json({
