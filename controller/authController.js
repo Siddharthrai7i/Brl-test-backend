@@ -72,7 +72,7 @@ exports.authStudent = async (req, res, next) => {
 };
 
 exports.checkStartTime = (req, res, next) => {
-  if (Date.now() >= Date.UTC(2020, 07, 17, 15, 00)) {
+  if (Date.now() >= 1597675200000) {
     next();
   } else {
     res.status(400).json({
@@ -82,7 +82,7 @@ exports.checkStartTime = (req, res, next) => {
 };
 
 exports.checkEndTime = (req, res, next) => {
-  if (Date.now() <= Date.UTC(2020, 07, 17, 16, 50)) {
+  if (Date.now() <= 1597678200000) {
     next();
   } else {
     res.status(400).json({
