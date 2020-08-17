@@ -96,9 +96,8 @@ exports.checkEndTime = (req, res, next) => {
 exports.remainingTime = (req, res, next) => {
   // var testEndTime = Date.UTC(2020,07,18,11,10);
   var testStartTime = Date.now();
-  var remainingTime =
-    new Date(process.env.TESTENDTIME * 1).getUTCMinutes() -
-    new Date(testStartTime).getUTCMinutes();
+  var remainingTime = parseInt(process.env.TESTENDTIME) - testStartTime;
+  remainingTime = remainingTime / 60000;
   if (remainingTime < 0) {
     remainingTime = 0;
   }
