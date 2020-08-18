@@ -33,6 +33,69 @@ db.users.aggregate([
       score: {
         $cond: [{ $eq: ["$correct.correct", "$responses.response"] }, 1, 0],
       },
+      apti: {
+        $cond: [
+          {
+            $and: [
+              { $eq: ["$correct.correct", "$responses.response"] },
+              { $eq: ["$correct.category", "apti"] },
+            ],
+          },
+          1,
+          0,
+        ],
+      },
+      html: {
+        $cond: [
+          {
+            $and: [
+              { $eq: ["$correct.correct", "$responses.response"] },
+              { $eq: ["$correct.category", "html"] },
+            ],
+          },
+          1,
+          0,
+        ],
+      },
+      css: {
+        $cond: [
+          {
+            $and: [
+              { $eq: ["$correct.correct", "$responses.response"] },
+              { $eq: ["$correct.category", "css"] },
+            ],
+          },
+          1,
+          0,
+        ],
+      },
+      blockchain: {
+        $cond: [
+          {
+            $and: [
+              { $eq: ["$correct.correct", "$responses.response"] },
+              { $eq: ["$correct.category", "blockchain"] },
+            ],
+          },
+          1,
+          0,
+        ],
+      },
+      language: {
+        $cond: [
+          {
+            $and: [
+              { $eq: ["$correct.correct", "$responses.response"] },
+              { $ne: ["$correct.category", "apti"] },
+              { $ne: ["$correct.category", "html"] },
+              { $ne: ["$correct.category", "css"] },
+              { $ne: ["$correct.category", "blockchain"] },
+            ],
+          },
+          1,
+          0,
+        ],
+      },
     },
   },
   {
@@ -40,13 +103,19 @@ db.users.aggregate([
       _id: "$_id",
       name: { $first: "$name" },
       phoneNumber: { $first: "$phoneNumber" },
-      email: { $first: "$phoneNumber" },
+      email: { $first: "$email" },
+      skills: { $first: "$skills" },
+      switchCounter: { $first: "$switchCounter" },
       score: { $sum: "$score" },
+      apti: { $sum: "$apti" },
+      html: { $sum: "$html" },
+      css: { $sum: "$css" },
+      blockchain: { $sum: "$blockchain" },
+      language: { $sum: "$language" },
     },
   },
   {
-    $out: "result",
+    $out: "subject",
   },
-]);
-
+])
 ```
