@@ -104,6 +104,8 @@ db.users.aggregate([
       name: { $first: "$name" },
       phoneNumber: { $first: "$phoneNumber" },
       email: { $first: "$email" },
+      rollNumber: { $first: "$rollNumber" },
+      branch: { $first: "$branch" },
       skills: { $first: "$skills" },
       switchCounter: { $first: "$switchCounter" },
       score: { $sum: "$score" },
