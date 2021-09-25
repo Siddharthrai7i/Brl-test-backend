@@ -72,7 +72,7 @@ exports.authStudent = async (req, res, next) => {
 };
 
 exports.checkStartTime = (req, res, next) => {
-  if (Date.now() >= process.env.TESTENDTIME * 1 - 1800000) {
+  if (Date.now() >= process.env.TESTENDTIME * 1 - 5400000) {
     // end time - 30 minutes i.e 4:00 PM IST of 18 Aug
     next();
   } else {
