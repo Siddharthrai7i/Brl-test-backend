@@ -96,6 +96,7 @@ exports.returnQuestions = async (req, res, next) => {
 exports.getQuestions = async (req, res, next) => {
   const user = await User.findById(req.user.id);
   console.log(req.query.category);
+  console.log(user.questions);
   // If user already has the questions
   if (user.questions.length != 0) {
     return res.redirect("/student/return-questions");
@@ -127,8 +128,8 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          apti: [
-            { $match: { category: "apti" } },
+          io: [
+            { $match: { category: "io" } },
             { $sample: { size: 5 } },
             {
               $project: {
@@ -149,8 +150,52 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          language: [
-            { $match: { category: req.query.category } },
+          pipeline: [
+            { $match: { category: "pipeline" } },
+            { $sample: { size: 1 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          time: [
+            { $match: { category: "time" } },
+            { $sample: { size: 1 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          series: [
+            { $match: { category: "series" } },
+            { $sample: { size: 1 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          coding: [
+            { $match: { category: "coding" } },
+            { $sample: { size: 2 } },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+              },
+            },
+          ],
+          c: [
+            { $match: { category: "c" } },
             { $sample: { size: 5 } },
             {
               $project: {
@@ -172,15 +217,27 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-    const temp_apti = await res_questions[0]["apti"].map((item) =>
+    const temp_io = await res_questions[0]["io"].map((item) =>
       item._id.toString()
     );
 
     const temp_block = await res_questions[0]["blockchain"].map((item) =>
       item._id.toString()
     );
+    const temp_pipe = await res_questions[0]["pipeline"].map((item) =>
+      item._id.toString()
+    );
+    const temp_time = await res_questions[0]["time"].map((item) =>
+      item._id.toString()
+    );
+    const temp_coding = await res_questions[0]["coding"].map((item) =>
+      item._id.toString()
+    );
+    const temp_series = await res_questions[0]["series"].map((item) =>
+      item._id.toString()
+    );
 
-    const temp_lang = await res_questions[0]["language"].map((item) =>
+    const temp_lang = await res_questions[0]["c"].map((item) =>
       item._id.toString()
     );
 
@@ -188,8 +245,12 @@ exports.getQuestions = async (req, res, next) => {
       ...temp_html,
       ...temp_lang,
       ...temp_css,
-      ...temp_apti,
+      ...temp_io,
       ...temp_block,
+      ...temp_pipe,
+      ...temp_time,
+      ...temp_coding,
+      ...temp_series,
     ];
     user.questions = temp_questions_arr;
     user.save();
@@ -197,10 +258,15 @@ exports.getQuestions = async (req, res, next) => {
     let ret_questions = [
       ...res_questions[0].html,
       ...res_questions[0].css,
-      ...res_questions[0].apti,
+      ...res_questions[0].io,
       ...res_questions[0].blockchain,
-      ...res_questions[0].language,
+      ...res_questions[0].c,
+      ...res_questions[0].pipeline,
+      ...res_questions[0].time,
+      ...res_questions[0].coding,
+      ...res_questions[0].series,
     ];
+    console.log(ret_questions);
     return res
       .status(200)
       .json({ res_questions: ret_questions, time: req.time });
