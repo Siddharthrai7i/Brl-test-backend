@@ -28,7 +28,7 @@ exports.loginStudent = (req, res) => {
                 token: token,
                 time: {
                   hours: 00,
-                  minutes: 30,
+                  minutes: 60,
                   seconds: 00,
                 },
               });
@@ -72,7 +72,7 @@ exports.authStudent = async (req, res, next) => {
 };
 
 exports.checkStartTime = (req, res, next) => {
-  if (Date.now() >= process.env.TESTENDTIME * 1 - 5400000) {
+  if (Date.now() >= process.env.TESTENDTIME * 1 - 3600000) {
     // end time - 30 minutes i.e 4:00 PM IST of 18 Aug
     next();
   } else {
