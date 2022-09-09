@@ -101,14 +101,15 @@ exports.getQuestions = async (req, res, next) => {
   if (user.questions.length != 0) {
     return res.redirect("/student/return-questions");
   }
+  // aptitude general programming html/css
 
   try {
     const res_questions = await Question.aggregate([
       {
         $facet: {
-          html: [
-            { $match: { category: "html" } },
-            { $sample: { size: 5 } },
+          aptitude: [
+            { $match: { category: "aptitude" } },
+            { $sample: { size: 10 } },
             {
               $project: {
                 _id: 1,
@@ -117,9 +118,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          css: [
-            { $match: { category: "css" } },
-            { $sample: { size: 5 } },
+          html_css: [
+            { $match: { category: "html_css" } },
+            { $sample: { size: 10 } },
             {
               $project: {
                 _id: 1,
@@ -128,9 +129,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          io: [
-            { $match: { category: "io" } },
-            { $sample: { size: 5 } },
+          programming: [
+            { $match: { category: "programming" } },
+            { $sample: { size: 10 } },
             {
               $project: {
                 _id: 1,
@@ -139,64 +140,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          blockchain: [
-            { $match: { category: "blockchain" } },
-            { $sample: { size: 5 } },
-            {
-              $project: {
-                _id: 1,
-                question: 1,
-                options: ["$one", "$two", "$three", "$four"],
-              },
-            },
-          ],
-          pipeline: [
-            { $match: { category: "pipeline" } },
-            { $sample: { size: 1 } },
-            {
-              $project: {
-                _id: 1,
-                question: 1,
-                options: ["$one", "$two", "$three", "$four"],
-              },
-            },
-          ],
-          time: [
-            { $match: { category: "time" } },
-            { $sample: { size: 1 } },
-            {
-              $project: {
-                _id: 1,
-                question: 1,
-                options: ["$one", "$two", "$three", "$four"],
-              },
-            },
-          ],
-          series: [
-            { $match: { category: "series" } },
-            { $sample: { size: 1 } },
-            {
-              $project: {
-                _id: 1,
-                question: 1,
-                options: ["$one", "$two", "$three", "$four"],
-              },
-            },
-          ],
-          coding: [
-            { $match: { category: "coding" } },
-            { $sample: { size: 2 } },
-            {
-              $project: {
-                _id: 1,
-                question: 1,
-                options: ["$one", "$two", "$three", "$four"],
-              },
-            },
-          ],
-          c: [
-            { $match: { category: "c" } },
-            { $sample: { size: 5 } },
+          general: [
+            { $match: { category: "general" } },
+            { $sample: { size: 10 } },
             {
               $project: {
                 _id: 1,
@@ -209,69 +155,47 @@ exports.getQuestions = async (req, res, next) => {
       },
     ]);
 
-    const temp_html = await res_questions[0]["html"].map((item) =>
+    const temp_aptitude = await res_questions[0]["aptitude"].map((item) =>
       item._id.toString()
     );
 
-    const temp_css = await res_questions[0]["css"].map((item) =>
+    const  temp_html_css = await res_questions[0]["html_css"].map((item) =>
       item._id.toString()
     );
 
-    const temp_io = await res_questions[0]["io"].map((item) =>
+    const temp_programming = await res_questions[0]["programming"].map((item) =>
       item._id.toString()
     );
 
-    const temp_block = await res_questions[0]["blockchain"].map((item) =>
-      item._id.toString()
-    );
-    const temp_pipe = await res_questions[0]["pipeline"].map((item) =>
-      item._id.toString()
-    );
-    const temp_time = await res_questions[0]["time"].map((item) =>
-      item._id.toString()
-    );
-    const temp_coding = await res_questions[0]["coding"].map((item) =>
-      item._id.toString()
-    );
-    const temp_series = await res_questions[0]["series"].map((item) =>
-      item._id.toString()
-    );
-
-    const temp_lang = await res_questions[0]["c"].map((item) =>
+    const temp_general = await res_questions[0]["general"].map((item) =>
       item._id.toString()
     );
 
     let temp_questions_arr = [
-      ...temp_html,
-      ...temp_lang,
-      ...temp_css,
-      ...temp_io,
-      ...temp_block,
-      ...temp_pipe,
-      ...temp_time,
-      ...temp_coding,
-      ...temp_series,
+      ...temp_aptitude,
+      ...temp_html_css,
+      ...temp_programming,
+      ...temp_general,
     ];
+    
     user.questions = temp_questions_arr;
     user.save();
 
     let ret_questions = [
-      ...res_questions[0].html,
-      ...res_questions[0].css,
-      ...res_questions[0].io,
-      ...res_questions[0].blockchain,
-      ...res_questions[0].c,
-      ...res_questions[0].pipeline,
-      ...res_questions[0].time,
-      ...res_questions[0].coding,
-      ...res_questions[0].series,
+      ...res_questions[0].aptitude,
+      ...res_questions[0].html_css,
+      ...res_questions[0].programming,
+      ...res_questions[0].general,
     ];
+
     console.log(ret_questions);
+
     return res
       .status(200)
       .json({ res_questions: ret_questions, time: req.time });
+
   } catch (err) {
-    return res.status(500).json({ err: "server error" });
+    return res.status(500).json({ err: "Some error occured." });
   }
 };
 
@@ -305,6 +229,8 @@ exports.saveResponses = async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
     selected = req.body.responses;
+
+    console.log(selected);
 
     selected.forEach((element) => {
       if (element.response === 1) {
