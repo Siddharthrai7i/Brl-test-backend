@@ -115,6 +115,7 @@ exports.getQuestions = async (req, res, next) => {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
+                isImage: 1
               },
             },
           ],
@@ -126,6 +127,7 @@ exports.getQuestions = async (req, res, next) => {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
+                isImage: 1
               },
             },
           ],
@@ -137,6 +139,7 @@ exports.getQuestions = async (req, res, next) => {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
+                isImage: 1
               },
             },
           ],
@@ -148,6 +151,7 @@ exports.getQuestions = async (req, res, next) => {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
+                isImage: 1
               },
             },
           ],

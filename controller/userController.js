@@ -18,7 +18,7 @@ exports.addUser = async (req, res) => {
     phoneNumber,
     email,
     branch,
-    password: password,
+    password,
   });
 
   await user.save();

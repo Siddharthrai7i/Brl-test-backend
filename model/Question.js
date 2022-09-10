@@ -25,6 +25,14 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+    required: true,
+  },
+  isImage: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 module.exports = Question = mongoose.model("Question", QuestionSchema);
