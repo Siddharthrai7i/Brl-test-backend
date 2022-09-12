@@ -94,16 +94,15 @@ exports.returnQuestions = async (req, res, next) => {
 
 // get 25 questions
 exports.getQuestions = async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-  console.log(req.query.category);
-  console.log(user.questions);
-  // If user already has the questions
-  if (user.questions.length != 0) {
-    return res.redirect("/student/return-questions");
-  }
-  // aptitude general programming html/css
-
   try {
+    const user = await User.findById(req.user.id);
+    // console.log(req.query.category);
+    // console.log(user.questions);
+    // If user already has the questions
+    if (user.questions.length != 0) {
+      return res.redirect("/student/return-questions");
+    }
+
     const res_questions = await Question.aggregate([
       {
         $facet: {
@@ -163,7 +162,7 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-    const  temp_html_css = await res_questions[0]["html_css"].map((item) =>
+    const temp_html_css = await res_questions[0]["html_css"].map((item) =>
       item._id.toString()
     );
 
@@ -181,7 +180,7 @@ exports.getQuestions = async (req, res, next) => {
       ...temp_programming,
       ...temp_general,
     ];
-    
+
     user.questions = temp_questions_arr;
     user.save();
 
