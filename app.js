@@ -2,6 +2,7 @@ var createError = require("http-errors");
 const express = require("express");
 var path = require("path");
 const app = express();
+const rateLimit = require("express-rate-limit");
 var logger = require("morgan");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -13,6 +14,14 @@ const cors = require("cors");
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
+
+const limiter = rateLimit({
+	windowMs: 2 * 60 * 1000, // 10 minutes
+	max: 1000, // limit each IP to 400 requests per windowMs
+});
+
+app.set('trust proxy', 1);
+app.use(limiter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -49,7 +58,7 @@ app.use(
 //middleware
 app.use("/", indexRoute);
 app.use("/student", authStudent, studentRoute);
-// app.use("/admin", authAdmin ,adminRoute);
+//app.use("/admin", adminRoute);
 
 app.use((req, res) => {
   res.status(404).send("404 Not Found");
