@@ -191,7 +191,7 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].general,
     ];
 
-    console.log(ret_questions);
+    // console.log(ret_questions);
 
     return res
       .status(200)
