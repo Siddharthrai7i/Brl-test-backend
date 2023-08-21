@@ -83,7 +83,12 @@ exports.checkStartTime = (req, res, next) => {
 };
 
 exports.checkEndTime = (req, res, next) => {
-  if (Date.now() <= process.env.TESTENDTIME * 1) {
+  console.log("here");
+  var event = new Date(`${process.env.TESTENDTIME}`);
+  event = event.toISOString()
+  var current = new Date();
+  current = current.toISOString()
+  if (current <= event) {
     //end time i.e 4:30 PM IST of 18 Aug
     next();
   } else {

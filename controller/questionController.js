@@ -283,6 +283,7 @@ exports.saveResponses = async (req, res, next) => {
     await user.save();
     return res.status(200).json({ msg: "Success" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server Error" });
   }
 };
