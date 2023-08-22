@@ -95,6 +95,7 @@ exports.returnQuestions = async (req, res, next) => {
 // get 25 questions
 exports.getQuestions = async (req, res, next) => {
   try {
+    console.log("here in getQuestions");
     const user = await User.findById(req.user.id);
     // console.log(req.query.category);
     // console.log(user.questions);

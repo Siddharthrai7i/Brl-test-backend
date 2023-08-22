@@ -125,4 +125,24 @@ router.get("/result", (req, res) => {
 
 });
 
+const Test = require("../model/Time")
+router.post("/make", (req,res)=>{
+    try{
+    Test.create({
+        title:"BRL Recruitment Test",
+        startTime: Date.now(),
+        endTime: Date.now()
+    });
+    res.status(200).json({
+        message:"success"
+    })
+}catch(err){
+    console.log(err);
+    res.status(500).json({
+        message:"failed"
+    })
+}
+
+})
+
 module.exports = router;

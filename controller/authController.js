@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
+const Test = require("../model/Time");
 
 const checkToken = (req) => {
   const header = req.headers["authorization"];
@@ -28,7 +29,7 @@ exports.loginStudent = (req, res) => {
                 token: token,
                 time: {
                   hours: 00,
-                  minutes: 60,
+                  minutes: 90,
                   seconds: 00,
                 },
               });
@@ -71,43 +72,48 @@ exports.authStudent = async (req, res, next) => {
   }
 };
 
-exports.checkStartTime = (req, res, next) => {
-  if (Date.now() >= process.env.TESTENDTIME * 1 - process.env.TEST_DURATION) {
-    // end time - 30 minutes i.e 4:00 PM IST of 18 Aug
-    next();
-  } else {
-    res.status(400).json({
-      message: "Test Not Yet Started",
-    });
+exports.checkTime = (req,res,next)=>{
+  try{
+	  Test.findOne({ title: "BRL Recruitment Test"}, function (err, result) {
+      var time = new Date();
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+		  }
+		  else {
+			  if (time > result.startTime) {
+				  if (time < result.endTime) {
+					  const remainingTime = (result.endTime - time);
+            const minutes = Math.max(0,Math.floor(remainingTime / 60000));
+            const seconds = Math.max(0,Math.floor((remainingTime % 60000) / 1000));
+            req.time = {
+              minutes: minutes,
+              seconds:seconds
+            }
+					  next();
+				  }
+				  else {
+					  res.status(500).json({
+						  message: "Test has Ended",
+					  });
+				  }
+		 	  }
+			  else {
+				  message = "Test Not Yet Started";
+				  var time_to_start = result.startTime - time;
+          const minutes = Math.floor(time_to_start / 60000);
+          const seconds = Math.floor((time_to_start % 60000) / 1000);
+				  res.status(500).json({
+					  message: message,
+            minutes: minutes,
+            seconds:seconds
+				  });
+			  }
+		  }
+    })
+  }catch(err){
+    console.log(err);
+    res.status(500).json({message: "Internal Server Error"});
   }
-};
+}
 
-exports.checkEndTime = (req, res, next) => {
-  console.log("here");
-  var event = new Date(`${process.env.TESTENDTIME}`);
-  event = event.toISOString()
-  var current = new Date();
-  current = current.toISOString()
-  if (current <= event) {
-    //end time i.e 4:30 PM IST of 18 Aug
-    next();
-  } else {
-    res.status(400).json({
-      message: "Test has Ended",
-    });
-  }
-};
-
-exports.remainingTime = (req, res, next) => {
-  // var testEndTime = Date.UTC(2020,07,18,11,10);
-  var testStartTime = Date.now();
-  var remainingTime = parseInt(process.env.TESTENDTIME) - testStartTime;
-  minutes = Math.floor(remainingTime / 60000);
-  seconds = Math.floor((remainingTime % 60000) / 1000);
-  if (minutes < 0 || seconds < 0) {
-    minutes = 0;
-    seconds = 0;
-  }
-  req.time = { minutes: minutes, seconds: seconds };
-  next();
-};
