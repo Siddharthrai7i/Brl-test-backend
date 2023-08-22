@@ -541,7 +541,6 @@ exports.bonusResponses = async (req, res) => {
       ...respOb,
       ...subsOb,
     };
-    console.log(respObj);
 
     let finalResp = [];
     Object.keys(respObj).forEach((ele) => {
@@ -551,7 +550,6 @@ exports.bonusResponses = async (req, res) => {
       ob["status"] = "saved";
       finalResp.push(ob);
     });
-    console.log(finalResp);
 
     user.bonus_responses = finalResp;
     await user.save();
