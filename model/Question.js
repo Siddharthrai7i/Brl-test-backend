@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const QuestionSchema = new mongoose.Schema({
+  set: {
+    type: Number,
+    required: true,
+  },
   question: {
     type: String,
     required: true,
@@ -28,15 +32,20 @@ const QuestionSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
+    enum:["HTML/CSS","APTITUDE","AIML","PROGRAMMING","BLOCKCHAIN","NETWORKING"]
   },
-  isImage: {
+  isQuestionImage: {
     type: Boolean,
     required: true,
   },
-  imageString: { 
+  isOptionImage: {
+    type: Boolean,
+    required: true,
+  },
+  imageString: {
     type: String,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 
 module.exports = Question = mongoose.model("Question", QuestionSchema);

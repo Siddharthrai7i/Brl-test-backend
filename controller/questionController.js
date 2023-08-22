@@ -205,18 +205,20 @@ exports.getQuestions = async (req, res, next) => {
 // to add questions
 exports.addQuestions = async (req, res) => {
   try {
-    const { question, one, two, three, four, correct, category, isImage } =
+    const { set, question, one, two, three, four, correct, category, isOptionImage,isQuestionImage } =
       req.body;
-    const questionObj = new BonusQuestion({
+    const questionObj = new Question({
+      set: parseInt(set),
       question: question,
       one: one,
       two: two,
       three: three,
       four: four,
       correct: correct,
-      category: category,
-      isImage: isImage,
-      imageString: req.body.imageString ? imageString : "",
+      category: category.toUpperCase(),
+      isQuestionImage: isQuestionImage,
+      isOptionImage: isOptionImage,
+      imageString: req.body.isQuestionImage ? req.imageString : "",
     });
 
     await questionObj
