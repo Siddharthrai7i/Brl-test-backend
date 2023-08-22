@@ -470,8 +470,8 @@ exports.bonusResponses = async (req, res) => {
     console.log("subs", subs);
     let resp = [];
     console.log("user.response", user.responses);
-    if (typeof user.responses !== "undefined" && user.responses.length > 0) {
-      resp = [...user.responses];
+    if (typeof user.bonus_responses !== "undefined" && user.bonus_responses.length > 0) {
+      resp = [...user.bonus_responses];
     }
     console.log("resp", resp);
     var respOb = {};
@@ -502,7 +502,7 @@ exports.bonusResponses = async (req, res) => {
     });
     console.log("finalResp", finalResp);
 
-    user.responses = finalResp;
+    user.bonus_responses = finalResp;
     await user.save();
     return res.status(200).json({ msg: "Success" });
   } catch (err) {
