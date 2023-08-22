@@ -395,8 +395,8 @@ exports.addBonusQuestions = async (req, res) => {
 exports.getBonusQuestions = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
-    const selectedDomain1 = req.query.choice1;
-    const selectedDomain2 = req.query.choice2;
+    const selectedDomain1 = req.headers.choice1;
+    const selectedDomain2 = req.headers.choice2;
 
     if (!selectedDomain1 || !selectedDomain2) {
       return res.status(400).send("Invalid selection");
