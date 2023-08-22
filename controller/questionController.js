@@ -392,48 +392,58 @@ exports.addBonusQuestions = async (req, res) => {
   }
 };
 
-exports.getBonusQuestions = async (req, res) => {
-  const selectedDomain1 = req.query.choice1;
-  const selectedDomain2 = req.query.choice2;
-  console.log(req.query.choice1, " ", req.query.choice2);
-
-  if (!selectedDomain1 || !selectedDomain2) {
-    return res.status(400).send("Invalid selection");
-  }
-
+exports.getBonusQuestions = async (req, res, next) => {
   try {
-    var questionsArray = await BonusQuestion.find({
-      $or: [{ domain: selectedDomain1 }, { domain: selectedDomain2 }],
-    });
+    const user = await User.findById(req.user.id);
+    const selectedDomain1 = req.query.choice1;
+    const selectedDomain2 = req.query.choice2;
 
-    let questions = [];
-    questionsArray.forEach((ele) => {
-      const ob = {
-        question: ele.question,
-        one:ele.one,
-        two:ele.two,
-        three: ele.three,
-        four: ele.four,
-        domain:ele.domain,
-        isQuestionImage: ele.isQuestionImage,
-        isOptionImage: ele.isOptionImage,
-        imageString: ele.imageString,
-      };
-      questions.push(ob);
-    });
-    console.log(questions);
-    if (questions.length === 0) {
-      return res
-        .status(404)
-        .json({message: "No bonus questions found for the selected domains"});
+    if (!selectedDomain1 || !selectedDomain2) {
+      return res.status(400).send("Invalid selection");
     }
 
-    res.status(200).json(questions);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    const res_questions = await BonusQuestion.aggregate([
+      {
+        $facet: {
+          bonus: [
+            {
+              $match: {
+                $or: [{ domain: selectedDomain1 }, { domain: selectedDomain2 }],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                domain: 1,
+                isQuestionImage: 1,
+                isOptionImage: 1,
+                imageString: 1,
+              },
+            },
+          ],
+        },
+      },
+    ]);
+    const questions = await res_questions[0]["bonus"].map((item) =>
+      item._id.toString()
+    );
+    let temp_questions_arr = [
+      ...questions
+    ];
+
+    user.bonus_questions = temp_questions_arr;
+    user.save();
+
+    return res
+      .status(200)
+      .json({ res_questions: res_questions[0].bonus, time: req.time });
+  } catch (err) {
+    return res.status(500).json({ err: "Some error occured." });
   }
 };
+
 
 //accept responses for bonus questions
 exports.bonusResponses = async (req, res) => {

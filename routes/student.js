@@ -66,7 +66,7 @@ router.post(
 
 router.patch("/unfairAttempt", userController.unfair);
 
-router.get("/get-bonus-questions", questionController.getBonusQuestions);
+router.get("/get-bonus-questions", checkTime, questionController.getBonusQuestions);
 
 router.post(
   "/submit-bonus-responses",
