@@ -450,7 +450,6 @@ exports.bonusResponses = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     selected = req.body.responses;
-    console.log(selected);
 
     selected.forEach((element) => {
       if (element.response === 1) {
@@ -467,30 +466,26 @@ exports.bonusResponses = async (req, res) => {
     });
 
     let subs = [...selected];
-    console.log("subs", subs);
     let resp = [];
-    console.log("user.response", user.responses);
     if (typeof user.bonus_responses !== "undefined" && user.bonus_responses.length > 0) {
       resp = [...user.bonus_responses];
     }
-    console.log("resp", resp);
+
     var respOb = {};
     resp.forEach((ele) => {
       respOb[ele["question"]] = ele["response"];
       respOb[ele["question"]] = ele["domain"];
     });
-    console.log("respOb", respOb);
+
     let subsOb = {};
     subs.forEach((ele) => {
       subsOb[ele["question"]] = ele["response"];
     });
-    console.log("subsOb", subsOb);
 
     let respObj = {
       ...respOb,
       ...subsOb,
     };
-    console.log("respOb", respObj);
 
     let finalResp = [];
     Object.keys(respObj).forEach((ele) => {
@@ -500,11 +495,10 @@ exports.bonusResponses = async (req, res) => {
       ob["status"] = "saved";
       finalResp.push(ob);
     });
-    console.log("finalResp", finalResp);
 
     user.bonus_responses = finalResp;
     await user.save();
-    return res.status(200).json({ msg: "Success" });
+    return res.status(200).json({ message: "Success" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Server Error" });
