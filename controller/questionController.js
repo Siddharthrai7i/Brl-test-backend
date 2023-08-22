@@ -392,7 +392,7 @@ exports.addBonusQuestions = async (req, res) => {
   }
 };
 
-exports.domain_quiz = async (req, res) => {
+exports.getBonusQuestions = async (req, res) => {
   const selectedDomain1 = req.query.choice1;
   const selectedDomain2 = req.query.choice2;
   console.log(req.query.choice1, " ", req.query.choice2);
@@ -402,29 +402,30 @@ exports.domain_quiz = async (req, res) => {
   }
 
   try {
-    // const questionsDomain1 = await BonusQuestion.find({ domain: selectedDomain1 });
-    // const questionsDomain2 = await BonusQuestion.find({ domain: selectedDomain2 });
-    var questions = await BonusQuestion.find({
+    var questionsArray = await BonusQuestion.find({
       $or: [{ domain: selectedDomain1 }, { domain: selectedDomain2 }],
     });
-    
-    questions.forEach((ele) => {
-      questions["question"] = ele["question"];
-      questions["one"] = ele["one"];
-      questions["two"] = ele["two"];
-      questions["three"] = ele["three"];
-      questions["four"] = ele["four"];
-      questions["isQuestionImage"] = ele["isQuestionImage"];
-      questions["isOptionImage"] = ele["isOptionImage"];
-      questions["imageString"] = ele["imageString"];
-    });
 
-    // const allQuestions = [...questionsDomain1, ...questionsDomain2];
+    let questions = [];
+    questionsArray.forEach((ele) => {
+      const ob = {
+        question: ele.question,
+        one:ele.one,
+        two:ele.two,
+        three: ele.three,
+        four: ele.four,
+        domain:ele.domain,
+        isQuestionImage: ele.isQuestionImage,
+        isOptionImage: ele.isOptionImage,
+        imageString: ele.imageString,
+      };
+      questions.push(ob);
+    });
     console.log(questions);
     if (questions.length === 0) {
       return res
         .status(404)
-        .send("No bonus questions found for the selected domains");
+        .json({message: "No bonus questions found for the selected domains"});
     }
 
     res.status(200).json(questions);
