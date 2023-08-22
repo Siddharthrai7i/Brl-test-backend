@@ -98,8 +98,7 @@ exports.getQuestions = async (req, res, next) => {
   try {
     console.log("here in getQuestions");
     const user = await User.findById(req.user.id);
-    // console.log(req.query.category);
-    // console.log(user.questions);
+
     // If user already has the questions
     if (user.questions.length != 0) {
       return res.redirect("/student/return-questions");
@@ -392,14 +391,69 @@ exports.addBonusQuestions = async (req, res) => {
   }
 };
 
+exports.returnBonusQuestions = async (req, res, next) => {
+  var result = await User.aggregate([
+    {
+      $match: { _id: ObjectId(req.user.id) },
+    },
+    {
+      $addFields: {
+        bonusQuestionIds: {
+          $map: {
+            input: "$bonus_questions",
+            as: "bonusQuestionId",
+            in: { $toObjectId: "$$bonusQuestionId" },
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "bonus_questions",
+        localField: "bonusQuestionIds",
+        foreignField: "_id",
+        as: "bonusQuestions",
+      },
+    },
+    {
+      $project: {
+        bonusQuestions: 1,
+      },
+    },
+  ]);
+  result = result[0]["bonusQuestions"];
+
+  let finalResp = [];
+
+  result.forEach((item) => {
+    obj = {};
+    obj["_id"] = item._id,
+    obj["question"]= item.question,
+    obj["options"]= [item.one, item.two, item.three, item.four],
+    obj["domain"]= item.domain,
+    obj["isOptionImage"]= item.isOptionImage,
+    obj["isQuestionImage"] =item.isQuestionImage,
+    obj["imageString"] =item.imageString,
+    finalResp.push(obj);
+  });
+
+  return res
+    .status(200)
+    .json({ res_questions: finalResp, time: req.time });
+};
+
 exports.getBonusQuestions = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
-    const selectedDomain1 = req.headers.choice1;
-    const selectedDomain2 = req.headers.choice2;
+    const selectedDomain1 = req.query.choice1;
+    const selectedDomain2 = req.query.choice2;
 
     if (!selectedDomain1 || !selectedDomain2) {
       return res.status(400).send("Invalid selection");
+    }
+
+    if (user.bonus_questions.length != 0) {
+      return res.redirect("/student/return-bonus-questions");
     }
 
     const res_questions = await BonusQuestion.aggregate([
@@ -426,12 +480,11 @@ exports.getBonusQuestions = async (req, res, next) => {
         },
       },
     ]);
+
     const questions = await res_questions[0]["bonus"].map((item) =>
       item._id.toString()
     );
-    let temp_questions_arr = [
-      ...questions
-    ];
+    let temp_questions_arr = [...questions];
 
     user.bonus_questions = temp_questions_arr;
     user.save();
@@ -443,7 +496,6 @@ exports.getBonusQuestions = async (req, res, next) => {
     return res.status(500).json({ err: "Some error occured." });
   }
 };
-
 
 //accept responses for bonus questions
 exports.bonusResponses = async (req, res) => {
@@ -467,7 +519,10 @@ exports.bonusResponses = async (req, res) => {
 
     let subs = [...selected];
     let resp = [];
-    if (typeof user.bonus_responses !== "undefined" && user.bonus_responses.length > 0) {
+    if (
+      typeof user.bonus_responses !== "undefined" &&
+      user.bonus_responses.length > 0
+    ) {
       resp = [...user.bonus_responses];
     }
 
@@ -486,6 +541,7 @@ exports.bonusResponses = async (req, res) => {
       ...respOb,
       ...subsOb,
     };
+    console.log(respObj);
 
     let finalResp = [];
     Object.keys(respObj).forEach((ele) => {
@@ -495,6 +551,7 @@ exports.bonusResponses = async (req, res) => {
       ob["status"] = "saved";
       finalResp.push(ob);
     });
+    console.log(finalResp);
 
     user.bonus_responses = finalResp;
     await user.save();
