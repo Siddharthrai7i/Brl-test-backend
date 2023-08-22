@@ -43,10 +43,12 @@ router.post(
 
 // @route   POST /end-test
 // @desc    Store selected answers
-router.post("/end-test", 
-// checkEndTime,
-checkTime,
- questionController.endTest);
+router.post(
+  "/end-test",
+  // checkEndTime,
+  checkTime,
+  questionController.endTest
+);
 
 // @route   POST /submit-feedback
 // @desc    records feedback
@@ -63,5 +65,13 @@ router.post(
 );
 
 router.patch("/unfairAttempt", userController.unfair);
+
+router.get("/get-bonus-questions", questionController.domain_quiz);
+
+router.post(
+  "/submit-bonus-responses",
+  checkTime,
+  questionController.bonusResponses
+);
 
 module.exports = router;

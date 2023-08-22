@@ -29,7 +29,7 @@ exports.loginStudent = (req, res) => {
                 token: token,
                 time: {
                   hours: 00,
-                  minutes: 90,
+                  minutes: 60,
                   seconds: 00,
                 },
               });

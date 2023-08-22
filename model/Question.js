@@ -33,6 +33,10 @@ const QuestionSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  imageString: { 
+    type: String,
+    default: undefined
+  }
 });
 
 module.exports = Question = mongoose.model("Question", QuestionSchema);
