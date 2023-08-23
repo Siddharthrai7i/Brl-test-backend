@@ -82,6 +82,9 @@ exports.returnQuestions = async (req, res, next) => {
               _id: 1,
               question: 1,
               options: ["$one", "$two", "$three", "$four"],
+              isOptionImage: 1,
+              isQuestionImage: 1,
+              imageString: 1,
             },
           },
         ],
@@ -197,7 +200,7 @@ exports.getQuestions = async (req, res, next) => {
           blockchain: [
             {
               $match: {
-                $and: [{ category: "aptitude".toUpperCase() }, { set: set }],
+                $and: [{ category: "blockchain".toUpperCase() }, { set: set }],
               },
             },
             {
