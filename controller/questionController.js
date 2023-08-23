@@ -96,13 +96,10 @@ exports.returnQuestions = async (req, res, next) => {
 // get 25 questions
 exports.getQuestions = async (req, res, next) => {
   try {
-    console.log("here in getQuestions");
     const user = await User.findById(req.user.id);
 
     // Generate a random number between 1 and 2
     const set = Math.floor(Math.random() * 2) + 1;
-
-    console.log(set);
 
     // If user already has the questions
     if (user.questions.length != 0) {
@@ -115,7 +112,7 @@ exports.getQuestions = async (req, res, next) => {
           aptitude: [
             {
               $match: {
-                $and: [{ category: "aptitude".toUpperCase() }, { set: 1 }],
+                $and: [{ category: "aptitude".toUpperCase() }, { set: set }],
               },
             },
             {
@@ -132,7 +129,7 @@ exports.getQuestions = async (req, res, next) => {
           html_css: [
             {
               $match: {
-                $and: [{ category: "html/css".toUpperCase() }, { set: 1 }],
+                $and: [{ category: "html/css".toUpperCase() }, { set: set }],
               },
             },
             {
@@ -149,7 +146,7 @@ exports.getQuestions = async (req, res, next) => {
           programming: [
             {
               $match: {
-                $and: [{ category: "programming".toUpperCase() }, { set: 1 }],
+                $and: [{ category: "programming".toUpperCase() }, { set: set }],
               },
             },
             {
@@ -166,7 +163,7 @@ exports.getQuestions = async (req, res, next) => {
           networking: [
             {
               $match: {
-                $and: [{ category: "networking".toUpperCase() }, { set: 1 }],
+                $and: [{ category: "networking".toUpperCase() }, { set: set }],
               },
             },
             {
@@ -183,7 +180,7 @@ exports.getQuestions = async (req, res, next) => {
           aiml: [
             {
               $match: {
-                $and: [{ category: "aiml".toUpperCase() }, { set: 1 }],
+                $and: [{ category: "aiml".toUpperCase() }, { set: set }],
               },
             },
             {
@@ -200,7 +197,7 @@ exports.getQuestions = async (req, res, next) => {
           blockchain: [
             {
               $match: {
-                $and: [{ category: "aptitude".toUpperCase() }, { set: 1 }],
+                $and: [{ category: "aptitude".toUpperCase() }, { set: set }],
               },
             },
             {
@@ -242,14 +239,13 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-
     let temp_questions_arr = [
       ...temp_aptitude,
       ...temp_html_css,
       ...temp_programming,
       ...temp_blockchain,
       ...temp_networking,
-      ...temp_aiml
+      ...temp_aiml,
     ];
 
     user.questions = temp_questions_arr;
@@ -263,8 +259,6 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].networking,
       ...res_questions[0].aiml,
     ];
-
-    console.log(ret_questions);
 
     return res
       .status(200)
