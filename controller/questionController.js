@@ -99,6 +99,11 @@ exports.getQuestions = async (req, res, next) => {
     console.log("here in getQuestions");
     const user = await User.findById(req.user.id);
 
+    // Generate a random number between 1 and 2
+    const set = Math.floor(Math.random() * 2) + 1;
+
+    console.log(set);
+
     // If user already has the questions
     if (user.questions.length != 0) {
       return res.redirect("/student/return-questions");
@@ -108,50 +113,104 @@ exports.getQuestions = async (req, res, next) => {
       {
         $facet: {
           aptitude: [
-            { $match: { category: "aptitude" } },
-            { $sample: { size: 10 } },
+            {
+              $match: {
+                $and: [{ category: "aptitude".toUpperCase() }, { set: 1 }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1,
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
           html_css: [
-            { $match: { category: "html_css" } },
-            { $sample: { size: 10 } },
+            {
+              $match: {
+                $and: [{ category: "html/css".toUpperCase() }, { set: 1 }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1,
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
           programming: [
-            { $match: { category: "programming" } },
-            { $sample: { size: 10 } },
+            {
+              $match: {
+                $and: [{ category: "programming".toUpperCase() }, { set: 1 }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1,
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
-          general: [
-            { $match: { category: "general" } },
-            { $sample: { size: 10 } },
+          networking: [
+            {
+              $match: {
+                $and: [{ category: "networking".toUpperCase() }, { set: 1 }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1,
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              },
+            },
+          ],
+          aiml: [
+            {
+              $match: {
+                $and: [{ category: "aiml".toUpperCase() }, { set: 1 }],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              },
+            },
+          ],
+          blockchain: [
+            {
+              $match: {
+                $and: [{ category: "aptitude".toUpperCase() }, { set: 1 }],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
@@ -171,15 +230,26 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-    const temp_general = await res_questions[0]["general"].map((item) =>
+    const temp_aiml = await res_questions[0]["aiml"].map((item) =>
       item._id.toString()
     );
+
+    const temp_networking = await res_questions[0]["networking"].map((item) =>
+      item._id.toString()
+    );
+
+    const temp_blockchain = await res_questions[0]["blockchain"].map((item) =>
+      item._id.toString()
+    );
+
 
     let temp_questions_arr = [
       ...temp_aptitude,
       ...temp_html_css,
       ...temp_programming,
-      ...temp_general,
+      ...temp_blockchain,
+      ...temp_networking,
+      ...temp_aiml
     ];
 
     user.questions = temp_questions_arr;
@@ -189,10 +259,12 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].aptitude,
       ...res_questions[0].html_css,
       ...res_questions[0].programming,
-      ...res_questions[0].general,
+      ...res_questions[0].blockchain,
+      ...res_questions[0].networking,
+      ...res_questions[0].aiml,
     ];
 
-    // console.log(ret_questions);
+    console.log(ret_questions);
 
     return res
       .status(200)
@@ -205,8 +277,18 @@ exports.getQuestions = async (req, res, next) => {
 // to add questions
 exports.addQuestions = async (req, res) => {
   try {
-    const { set, question, one, two, three, four, correct, category, isOptionImage,isQuestionImage } =
-      req.body;
+    const {
+      set,
+      question,
+      one,
+      two,
+      three,
+      four,
+      correct,
+      category,
+      isOptionImage,
+      isQuestionImage,
+    } = req.body;
     const questionObj = new Question({
       set: parseInt(set),
       question: question,
@@ -429,19 +511,17 @@ exports.returnBonusQuestions = async (req, res, next) => {
 
   result.forEach((item) => {
     obj = {};
-    obj["_id"] = item._id,
-    obj["question"]= item.question,
-    obj["options"]= [item.one, item.two, item.three, item.four],
-    obj["domain"]= item.domain,
-    obj["isOptionImage"]= item.isOptionImage,
-    obj["isQuestionImage"] =item.isQuestionImage,
-    obj["imageString"] =item.imageString,
-    finalResp.push(obj);
+    (obj["_id"] = item._id),
+      (obj["question"] = item.question),
+      (obj["options"] = [item.one, item.two, item.three, item.four]),
+      (obj["domain"] = item.domain),
+      (obj["isOptionImage"] = item.isOptionImage),
+      (obj["isQuestionImage"] = item.isQuestionImage),
+      (obj["imageString"] = item.imageString),
+      finalResp.push(obj);
   });
 
-  return res
-    .status(200)
-    .json({ res_questions: finalResp, time: req.time });
+  return res.status(200).json({ res_questions: finalResp, time: req.time });
 };
 
 exports.getBonusQuestions = async (req, res, next) => {
