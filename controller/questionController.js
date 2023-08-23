@@ -322,8 +322,6 @@ exports.saveResponses = async (req, res, next) => {
 
     selected = req.body.responses;
 
-    console.log(selected);
-
     selected.forEach((element) => {
       if (element.response === 1) {
         element.response = "one";
@@ -344,21 +342,20 @@ exports.saveResponses = async (req, res, next) => {
       resp = [...user.responses];
     }
 
-    respOb = {};
+    let respOb = {};
     resp.forEach((ele) => {
       respOb[ele["question"]] = ele["response"];
     });
 
-    subsOb = {};
+    let subsOb = {};
     subs.forEach((ele) => {
       subsOb[ele["question"]] = ele["response"];
     });
 
-    respObj = {
+    let respObj = {
       ...respOb,
       ...subsOb,
     };
-    console.log("respObj", respObj);
 
     let finalResp = [];
     Object.keys(respObj).forEach((ele) => {
@@ -368,7 +365,6 @@ exports.saveResponses = async (req, res, next) => {
       ob["status"] = "saved";
       finalResp.push(ob);
     });
-    console.log("finalResp", finalResp);
 
     user.responses = finalResp;
     await user.save();
