@@ -32,7 +32,7 @@ const QuestionSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum:["HTML/CSS","APTITUDE","AIML","PROGRAMMING","BLOCKCHAIN","NETWORKING"]
+    enum:["HTML/CSS","APTITUDE","AIML","PROGRAMMING","BLOCKCHAIN","NETWORKING","BONUS"]
   },
   isQuestionImage: {
     type: Boolean,

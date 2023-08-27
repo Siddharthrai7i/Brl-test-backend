@@ -214,6 +214,23 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
+          bonus: [
+            {
+              $match: {
+                $and: [{ category: "bonus".toUpperCase() }, { set: set }],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              },
+            },
+          ],
         },
       },
     ]);
@@ -242,6 +259,10 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
+    const temp_bonus = await res_questions[0]["bonus"].map((item) =>
+      item._id.toString()
+    );
+
     let temp_questions_arr = [
       ...temp_aptitude,
       ...temp_html_css,
@@ -249,6 +270,7 @@ exports.getQuestions = async (req, res, next) => {
       ...temp_blockchain,
       ...temp_networking,
       ...temp_aiml,
+      ...temp_bonus,
     ];
 
     user.questions = temp_questions_arr;
@@ -261,6 +283,7 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].blockchain,
       ...res_questions[0].networking,
       ...res_questions[0].aiml,
+      ...res_questions[0].bonus,
     ];
 
     return res

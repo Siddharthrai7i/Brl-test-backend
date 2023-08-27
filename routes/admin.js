@@ -38,12 +38,14 @@ router.post(
 
 router.get("/result", (req, res) => {
   User.aggregate([
-    { $match: { responses: { $exists: true } } },
+    {
+      $match: { responses: { $exists: true } }
+    },
     {
       $unwind: {
         path: "$responses",
         preserveNullAndEmptyArrays: false,
-      },
+      }
     },
     {
       $lookup: {
@@ -54,80 +56,36 @@ router.get("/result", (req, res) => {
             $match: {
               $expr: {
                 $eq: ["$$questionid", "$_id"],
-              },
-            },
-          },
+              }
+            }
+          }
         ],
-        as: "correct",
-      },
+        as: "correct"
+      }
     },
     { $unwind: "$correct" },
     {
       $addFields: {
-        score: {
-          $cond: [{ $eq: ["$correct.correct", "$responses.response"] }, 4, -1],
-        },
-        aptitude: {
+        scoreChange: {
           $cond: [
+            { $eq: ["$correct.category", "bonus".toUpperCase()] },
             {
-              $eq: ["$correct.category", "aptitude"],
+              $cond: [
+                { $eq: ["$correct.correct", "$responses.response"] },
+                4, // +4 for correct answer in bonus category
+                -1.00 // -1.25 for incorrect answer in bonus category
+              ]
             },
             {
               $cond: [
                 { $eq: ["$correct.correct", "$responses.response"] },
-                4,
-                -1,
-              ],
-            },
-            0,
-          ],
-        },
-        html_css: {
-          $cond: [
-            {
-              $eq: ["$correct.category", "html_css"],
-            },
-            {
-              $cond: [
-                { $eq: ["$correct.correct", "$responses.response"] },
-                4,
-                -1,
-              ],
-            },
-            0,
-          ],
-        },
-        general: {
-          $cond: [
-            {
-              $eq: ["$correct.category", "general"],
-            },
-            {
-              $cond: [
-                { $eq: ["$correct.correct", "$responses.response"] },
-                4,
-                -1,
-              ],
-            },
-            0,
-          ],
-        },
-        programming: {
-          $cond: [
-            {
-              $eq: ["$correct.category", "programming"],
-            },
-            {
-              $cond: [
-                { $eq: ["$correct.correct", "$responses.response"] },
-                4,
-                -1,
-              ],
-            },
-            0,
-          ],
-        },
-      },
+                4, // +4 for correct answer
+                -0.25 // -0.25 for incorrect answer in other categories
+              ]
+            }
+          ]
+        }
+      }
     },
     {
       $group: {
@@ -139,17 +97,18 @@ router.get("/result", (req, res) => {
         branch: { $first: "$branch" },
         skills: { $first: "$skills" },
         switchCounter: { $first: "$switchCounter" },
-        score: { $sum: "$score" },
-        aptitude: { $sum: "$aptitude" },
-        html_css: { $sum: "$html_css" },
-        general: { $sum: "$general" },
-        programming: { $sum: "$programming" },
-      },
-    },
-    {
-      $out: "subject",
-    },
-  ])
+        score: { $sum: "$scoreChange" },
+        aptitude: { $sum: { $cond: [ { $eq: ["$correct.category", "aptitude".toUpperCase()] }, "$scoreChange", 0 ] } },
+        html_css: { $sum: { $cond: [ { $eq: ["$correct.category", "html/css".toUpperCase()] }, "$scoreChange", 0 ] } },
+        programming: { $sum: { $cond: [ { $eq: ["$correct.category", "programming".toUpperCase()] }, "$scoreChange", 0 ] } },
+        networking: { $sum: { $cond: [ { $eq: ["$correct.category", "networking".toUpperCase()] }, "$scoreChange", 0 ] } },
+        aiml: { $sum: { $cond: [ { $eq: ["$correct.category", "aiml".toUpperCase()] }, "$scoreChange", 0 ] } },
+        blockchain: { $sum: { $cond: [ { $eq: ["$correct.category", "blockchain".toUpperCase()] }, "$scoreChange", 0 ] } },
+        bonus: { $sum: { $cond: [ { $eq: ["$correct.category", "bonus".toUpperCase()] }, "$scoreChange", 0 ] } }
+      }
+    }
+  ]
+  )
     .then((result) => {
       res.send(result);
     })
