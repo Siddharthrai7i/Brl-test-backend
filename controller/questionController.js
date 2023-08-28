@@ -214,23 +214,23 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          bonus: [
-            {
-              $match: {
-                $and: [{ category: "bonus".toUpperCase() }, { set: set }],
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-                question: 1,
-                options: ["$one", "$two", "$three", "$four"],
-                isOptionImage: 1,
-                isQuestionImage: 1,
-                imageString: 1,
-              },
-            },
-          ],
+          // bonus: [
+          //   {
+          //     $match: {
+          //       $and: [{ category: "bonus".toUpperCase() }, { set: set }],
+          //     },
+          //   },
+          //   {
+          //     $project: {
+          //       _id: 1,
+          //       question: 1,
+          //       options: ["$one", "$two", "$three", "$four"],
+          //       isOptionImage: 1,
+          //       isQuestionImage: 1,
+          //       imageString: 1,
+          //     },
+          //   },
+          // ],
         },
       },
     ]);
@@ -259,9 +259,9 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-    const temp_bonus = await res_questions[0]["bonus"].map((item) =>
-      item._id.toString()
-    );
+    // const temp_bonus = await res_questions[0]["bonus"].map((item) =>
+    //   item._id.toString()
+    // );
 
     let temp_questions_arr = [
       ...temp_aptitude,
@@ -270,7 +270,7 @@ exports.getQuestions = async (req, res, next) => {
       ...temp_blockchain,
       ...temp_networking,
       ...temp_aiml,
-      ...temp_bonus,
+      // ...temp_bonus,
     ];
 
     user.questions = temp_questions_arr;
@@ -283,7 +283,7 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].blockchain,
       ...res_questions[0].networking,
       ...res_questions[0].aiml,
-      ...res_questions[0].bonus,
+      // ...res_questions[0].bonus,
     ];
 
     return res
@@ -599,6 +599,7 @@ exports.getBonusQuestions = async (req, res, next) => {
 exports.bonusResponses = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+
     selected = req.body.responses;
 
     selected.forEach((element) => {
@@ -617,17 +618,13 @@ exports.bonusResponses = async (req, res) => {
 
     let subs = [...selected];
     let resp = [];
-    if (
-      typeof user.bonus_responses !== "undefined" &&
-      user.bonus_responses.length > 0
-    ) {
+    if (typeof user.bonus_responses !== "undefined" && user.bonus_responses.length > 0) {
       resp = [...user.bonus_responses];
     }
 
-    var respOb = {};
+    let respOb = {};
     resp.forEach((ele) => {
       respOb[ele["question"]] = ele["response"];
-      respOb[ele["question"]] = ele["domain"];
     });
 
     let subsOb = {};
@@ -651,9 +648,9 @@ exports.bonusResponses = async (req, res) => {
 
     user.bonus_responses = finalResp;
     await user.save();
-    return res.status(200).json({ message: "Success" });
+    return res.status(200).json({ msg: "Success" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ error: "Server Error" });
   }
-};
+}
