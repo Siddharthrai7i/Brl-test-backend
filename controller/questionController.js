@@ -100,6 +100,8 @@ exports.returnQuestions = async (req, res, next) => {
 exports.getQuestions = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
+    const option1 = req.query.choice1.toUpperCase() ?? "";
+    const option2 = req.query.choice2.toUpperCase() ?? "";
 
     // Generate a random number between 1 and 2
     const set = Math.floor(Math.random() * 2) + 1;
@@ -108,6 +110,7 @@ exports.getQuestions = async (req, res, next) => {
     if (user.questions.length != 0) {
       return res.redirect("/student/return-questions");
     }
+    console.log(option1," ", option2);
 
     const res_questions = await Question.aggregate([
       {
@@ -214,23 +217,23 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
           ],
-          // bonus: [
-          //   {
-          //     $match: {
-          //       $and: [{ category: "bonus".toUpperCase() }, { set: set }],
-          //     },
-          //   },
-          //   {
-          //     $project: {
-          //       _id: 1,
-          //       question: 1,
-          //       options: ["$one", "$two", "$three", "$four"],
-          //       isOptionImage: 1,
-          //       isQuestionImage: 1,
-          //       imageString: 1,
-          //     },
-          //   },
-          // ],
+          bonus: [
+            {
+              $match: {
+                category: { $in: [option1, option2] },
+              }
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              }
+            },
+          ],
         },
       },
     ]);
@@ -259,9 +262,9 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-    // const temp_bonus = await res_questions[0]["bonus"].map((item) =>
-    //   item._id.toString()
-    // );
+    const temp_bonus = await res_questions[0]["bonus"].map((item) =>
+      item._id.toString()
+    );
 
     let temp_questions_arr = [
       ...temp_aptitude,
@@ -270,7 +273,7 @@ exports.getQuestions = async (req, res, next) => {
       ...temp_blockchain,
       ...temp_networking,
       ...temp_aiml,
-      // ...temp_bonus,
+      ...temp_bonus,
     ];
 
     user.questions = temp_questions_arr;
@@ -283,13 +286,14 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].blockchain,
       ...res_questions[0].networking,
       ...res_questions[0].aiml,
-      // ...res_questions[0].bonus,
+      ...res_questions[0].bonus,
     ];
 
     return res
       .status(200)
-      .json({ res_questions: ret_questions, time: req.time });
+      .json({ length: ret_questions.length, res_questions: ret_questions, time: req.time });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ err: "Some error occured." });
   }
 };
