@@ -93,15 +93,15 @@ exports.returnQuestions = async (req, res, next) => {
   ]);
   return res
     .status(200)
-    .json({ res_questions: result[0].questionsDetails, time: req.time });
+    .json({ length: result[0].questionsDetails.length, res_questions: result[0].questionsDetails, time: req.time });
 };
 
 // get 25 questions
 exports.getQuestions = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
-    const option1 = req.query.choice1.toUpperCase() ?? "";
-    const option2 = req.query.choice2.toUpperCase() ?? "";
+    const option1 = req.query.choice1 ?? "";
+    const option2 = req.query.choice2 ?? "";
 
     // Generate a random number between 1 and 2
     const set = Math.floor(Math.random() * 2) + 1;
@@ -220,7 +220,7 @@ exports.getQuestions = async (req, res, next) => {
           bonus: [
             {
               $match: {
-                category: { $in: [option1, option2] },
+                category: { $in: [option1.toUpperCase(), option2.toUpperCase()] },
               }
             },
             {
