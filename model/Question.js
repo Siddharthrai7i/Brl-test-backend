@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const QuestionSchema = new mongoose.Schema({
   set: {
     type: Number,
-    required: true,
   },
   question: {
     type: String,
@@ -41,10 +40,6 @@ const QuestionSchema = new mongoose.Schema({
   isOptionImage: {
     type: Boolean,
     required: true,
-  },
-  imageString: {
-    type: String,
-    default: undefined,
   },
 });
 
