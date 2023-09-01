@@ -61,24 +61,6 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-    bonus_questions: [
-      {
-        type: String,
-      },
-    ],
-    bonus_responses: [
-      {
-        question: {
-          type: String,
-        },
-        response: {
-          type: String,
-        },
-        status: {
-          type: String,
-        },
-      },
-    ],
   },
   { timestamps: true }
 );
