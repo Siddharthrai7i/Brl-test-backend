@@ -110,7 +110,6 @@ exports.getQuestions = async (req, res, next) => {
     if (user.questions.length != 0) {
       return res.redirect("/student/return-questions");
     }
-    console.log(option1," ", option2);
 
     const res_questions = await Question.aggregate([
       {
