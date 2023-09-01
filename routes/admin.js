@@ -16,25 +16,6 @@ router.post("/add-question", questionController.addQuestions);
 //get All Users
 // router.post("/users", userController.getUsers);
 
-// @route   POST /add-bonus-question
-// @desc    Add bonus questions to database
-// @access  Admin
-router.post(
-  "/add-bonus-question",
-  [
-    body("question", "Question is required").isString().exists(),
-    body("one", "Option is required").isString().exists(),
-    body("two", "Option is required").isString().exists(),
-    body("three", "Option is required").isString().exists(),
-    body("four", "Option is required").isString().exists(),
-    body("correct", "Correct answer is required").isString().exists(),
-    body("domain", "Domain is required").isString().exists(),
-    body("isQuestionImage", "isImage is required").isBoolean().exists(),
-    body("isOptionImage", "isImage is required").isBoolean().exists(),
-  ],
-  utilController.validateRequest,
-  questionController.addBonusQuestions
-);
 
 router.get("/result", (req, res) => {
   User.aggregate([

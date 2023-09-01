@@ -66,18 +66,18 @@ router.post(
 
 router.patch("/unfairAttempt", userController.unfair);
 
-router.get(
-  "/return-bonus-questions",
-  checkTime,
-  questionController.returnBonusQuestions
-);
+// router.get(
+//   "/return-bonus-questions",
+//   checkTime,
+//   questionController.returnBonusQuestions
+// );
 
-router.get("/get-bonus-questions", checkTime, questionController.getBonusQuestions);
+// router.get("/get-bonus-questions", checkTime, questionController.getBonusQuestions);
 
-router.post(
-  "/submit-bonus-responses",
-  checkTime,
-  questionController.bonusResponses
-);
+// router.post(
+//   "/submit-bonus-responses",
+//   checkTime,
+//   questionController.bonusResponses
+// );
 
 module.exports = router;
