@@ -221,7 +221,7 @@ exports.getQuestions = async (req, res, next) => {
           bonus: [
             {
               $match: {
-                category: { $in: [option1.toUpperCase(), option2.toUpperCase()] },
+                $and: [{ category: { $in: [option1.toUpperCase(), option2.toUpperCase()] } }, { set: set }],
               }
             },
             {
