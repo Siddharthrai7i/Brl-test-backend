@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../model/User");
 const Question = require("../model/Question");
+const BonusQuestion = require("../model/BonusQuestions");
 
 exports.postCheckAnswers = (req, res, next) => {
   let token = req.headers["authorization"];
@@ -81,6 +82,9 @@ exports.returnQuestions = async (req, res, next) => {
               _id: 1,
               question: 1,
               options: ["$one", "$two", "$three", "$four"],
+              isOptionImage: 1,
+              isQuestionImage: 1,
+              imageString: 1,
             },
           },
         ],
@@ -89,15 +93,21 @@ exports.returnQuestions = async (req, res, next) => {
   ]);
   return res
     .status(200)
-    .json({ res_questions: result[0].questionsDetails, time: req.time });
+    .json({ length: result[0].questionsDetails.length, res_questions: result[0].questionsDetails, time: req.time });
 };
 
 // get 25 questions
 exports.getQuestions = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
-    // console.log(req.query.category);
-    // console.log(user.questions);
+    const option1 = req.query.choice1 ?? "";
+    const option2 = req.query.choice2 ?? "";
+    
+    user.choices = [option1.toUpperCase(),option2.toUpperCase()];
+
+    // Generate a random number between 1 and 2
+    const set = Math.floor(Math.random() * 2) + 1;
+
     // If user already has the questions
     if (user.questions.length != 0) {
       return res.redirect("/student/return-questions");
@@ -107,51 +117,122 @@ exports.getQuestions = async (req, res, next) => {
       {
         $facet: {
           aptitude: [
-            { $match: { category: "aptitude" } },
-            { $sample: { size: 10 } },
+            {
+              $match: {
+                $and: [{ category: "aptitude".toUpperCase() }, { set: set }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
           html_css: [
-            { $match: { category: "html_css" } },
-            { $sample: { size: 10 } },
+            {
+              $match: {
+                $and: [{ category: "html/css".toUpperCase() }, { set: set }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
           programming: [
-            { $match: { category: "programming" } },
-            { $sample: { size: 10 } },
+            {
+              $match: {
+                $and: [{ category: "programming".toUpperCase() }, { set: set }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
             },
           ],
-          general: [
-            { $match: { category: "general" } },
-            { $sample: { size: 10 } },
+          networking: [
+            {
+              $match: {
+                $and: [{ category: "networking".toUpperCase() }, { set: set }],
+              },
+            },
             {
               $project: {
                 _id: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
-                isImage: 1
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
               },
+            },
+          ],
+          aiml: [
+            {
+              $match: {
+                $and: [{ category: "aiml".toUpperCase() }, { set: set }],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              },
+            },
+          ],
+          blockchain: [
+            {
+              $match: {
+                $and: [{ category: "blockchain".toUpperCase() }, { set: set }],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              },
+            },
+          ],
+          bonus: [
+            {
+              $match: {
+                $and: [{ category: { $in: [option1.toUpperCase(), option2.toUpperCase()] } }, { set: set }],
+              }
+            },
+            {
+              $project: {
+                _id: 1,
+                question: 1,
+                options: ["$one", "$two", "$three", "$four"],
+                isOptionImage: 1,
+                isQuestionImage: 1,
+                imageString: 1,
+              }
             },
           ],
         },
@@ -170,7 +251,19 @@ exports.getQuestions = async (req, res, next) => {
       item._id.toString()
     );
 
-    const temp_general = await res_questions[0]["general"].map((item) =>
+    const temp_aiml = await res_questions[0]["aiml"].map((item) =>
+      item._id.toString()
+    );
+
+    const temp_networking = await res_questions[0]["networking"].map((item) =>
+      item._id.toString()
+    );
+
+    const temp_blockchain = await res_questions[0]["blockchain"].map((item) =>
+      item._id.toString()
+    );
+
+    const temp_bonus = await res_questions[0]["bonus"].map((item) =>
       item._id.toString()
     );
 
@@ -178,7 +271,10 @@ exports.getQuestions = async (req, res, next) => {
       ...temp_aptitude,
       ...temp_html_css,
       ...temp_programming,
-      ...temp_general,
+      ...temp_blockchain,
+      ...temp_networking,
+      ...temp_aiml,
+      ...temp_bonus,
     ];
 
     user.questions = temp_questions_arr;
@@ -188,41 +284,62 @@ exports.getQuestions = async (req, res, next) => {
       ...res_questions[0].aptitude,
       ...res_questions[0].html_css,
       ...res_questions[0].programming,
-      ...res_questions[0].general,
+      ...res_questions[0].blockchain,
+      ...res_questions[0].networking,
+      ...res_questions[0].aiml,
+      ...res_questions[0].bonus,
     ];
-
-    // console.log(ret_questions);
 
     return res
       .status(200)
-      .json({ res_questions: ret_questions, time: req.time });
-
+      .json({ length: ret_questions.length, res_questions: ret_questions, time: req.time });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ err: "Some error occured." });
   }
 };
 
 // to add questions
 exports.addQuestions = async (req, res) => {
-  const { question, one, two, three, four, correct } = req.body;
-
   try {
-    const new_question = new Question({
+    const {
+      set,
       question,
       one,
       two,
       three,
       four,
       correct,
+      category,
+      isOptionImage,
+      isQuestionImage,
+    } = req.body;
+    const questionObj = new Question({
+      set: parseInt(set),
+      question: question,
+      one: one,
+      two: two,
+      three: three,
+      four: four,
+      correct: correct,
+      category: category.toUpperCase(),
+      isQuestionImage: isQuestionImage,
+      isOptionImage: isOptionImage,
+      imageString: req.body.isQuestionImage ? req.imageString : "",
     });
 
-    await new_question.save();
-
-    return res.status(200).json({ msg: "Question Saved" });
+    await questionObj
+      .save()
+      .then(() => {
+        return res.status(200).json({ message: "success" });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).json({ message: "Internal Server Error" });
+      });
   } catch (err) {
-    if (err) {
-      res.status(500).json({ error: "Server Error" });
-    }
+    console.log(err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -232,8 +349,6 @@ exports.saveResponses = async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
     selected = req.body.responses;
-
-    console.log(selected);
 
     selected.forEach((element) => {
       if (element.response === 1) {
@@ -255,17 +370,17 @@ exports.saveResponses = async (req, res, next) => {
       resp = [...user.responses];
     }
 
-    respOb = {};
+    let respOb = {};
     resp.forEach((ele) => {
       respOb[ele["question"]] = ele["response"];
     });
 
-    subsOb = {};
+    let subsOb = {};
     subs.forEach((ele) => {
       subsOb[ele["question"]] = ele["response"];
     });
 
-    respObj = {
+    let respObj = {
       ...respOb,
       ...subsOb,
     };
@@ -283,6 +398,7 @@ exports.saveResponses = async (req, res, next) => {
     await user.save();
     return res.status(200).json({ msg: "Success" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server Error" });
   }
 };

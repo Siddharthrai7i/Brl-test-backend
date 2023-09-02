@@ -1,8 +1,6 @@
 const express = require("express");
 const {
-  checkEndTime,
-  checkStartTime,
-  remainingTime,
+  checkTime,
 } = require("../controller/authController");
 const feedbackController = require("../controller/feedbackController");
 const questionController = require("../controller/questionController");
@@ -15,8 +13,7 @@ const { body } = require("express-validator");
 // @desc    Get 10 random questions
 router.get(
   "/get-questions",
-  checkStartTime,
-  remainingTime,
+  checkTime,
   questionController.getQuestions
 );
 
@@ -24,8 +21,7 @@ router.get(
 // @desc    Get 10 random questions
 router.get(
   "/return-questions",
-  checkStartTime,
-  remainingTime,
+  checkTime,
   questionController.returnQuestions
 );
 
@@ -33,13 +29,17 @@ router.get(
 // @desc    Store selected answers
 router.post(
   "/submit-responses",
-  checkEndTime,
+  checkTime,
   questionController.saveResponses
 );
 
 // @route   POST /end-test
 // @desc    Store selected answers
-router.post("/end-test", checkEndTime, questionController.endTest);
+router.post(
+  "/end-test",
+  checkTime,
+  questionController.endTest
+);
 
 // @route   POST /submit-feedback
 // @desc    records feedback
@@ -56,5 +56,6 @@ router.post(
 );
 
 router.patch("/unfairAttempt", userController.unfair);
+
 
 module.exports = router;

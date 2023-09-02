@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const QuestionSchema = new mongoose.Schema({
+  set: {
+    type: Number,
+    required: true,
+  },
   question: {
     type: String,
     required: true,
@@ -28,8 +32,13 @@ const QuestionSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
+    enum:["HTML/CSS","APTITUDE","AIML","PROGRAMMING","BLOCKCHAIN","NETWORKING","FRONTEND","BACKEND","ML","DESIGNING","APP"]
   },
-  isImage: {
+  isQuestionImage: {
+    type: Boolean,
+    required: true,
+  },
+  isOptionImage: {
     type: Boolean,
     required: true,
   },

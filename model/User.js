@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    choices:[String]
   },
   { timestamps: true }
 );
