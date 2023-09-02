@@ -102,6 +102,8 @@ exports.getQuestions = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     const option1 = req.query.choice1 ?? "";
     const option2 = req.query.choice2 ?? "";
+    
+    user.choices = [option1.toUpperCase(),option2.toUpperCase()];
 
     // Generate a random number between 1 and 2
     const set = Math.floor(Math.random() * 2) + 1;

@@ -1,8 +1,5 @@
 const express = require("express");
 const {
-  // checkEndTime,
-  // checkStartTime,
-  // remainingTime,
   checkTime,
 } = require("../controller/authController");
 const feedbackController = require("../controller/feedbackController");
@@ -16,8 +13,6 @@ const { body } = require("express-validator");
 // @desc    Get 10 random questions
 router.get(
   "/get-questions",
-  // checkStartTime,
-  // remainingTime,
   checkTime,
   questionController.getQuestions
 );
@@ -26,8 +21,6 @@ router.get(
 // @desc    Get 10 random questions
 router.get(
   "/return-questions",
-  // checkStartTime,
-  // remainingTime,
   checkTime,
   questionController.returnQuestions
 );
@@ -36,7 +29,6 @@ router.get(
 // @desc    Store selected answers
 router.post(
   "/submit-responses",
-  // checkEndTime,
   checkTime,
   questionController.saveResponses
 );
@@ -45,7 +37,6 @@ router.post(
 // @desc    Store selected answers
 router.post(
   "/end-test",
-  // checkEndTime,
   checkTime,
   questionController.endTest
 );
