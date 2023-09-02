@@ -116,11 +116,9 @@ exports.aggregateUsers = () => {
         $group: {
           _id: "$_id",
           name: { $first: "$name" },
-          phoneNumber: { $first: "$phoneNumber" },
           email: { $first: "$email" },
           rollNumber: { $first: "$rollNumber" },
           branch: { $first: "$branch" },
-          skills: { $first: "$skills" },
           switchCounter: { $first: "$switchCounter" },
           totalQuestions: { $first: "$totalQuestions" },
           score: { $sum: "$scoreChange" },
