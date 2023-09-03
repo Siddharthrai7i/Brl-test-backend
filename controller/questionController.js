@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../model/User");
 const Question = require("../model/Question");
-const BonusQuestion = require("../model/BonusQuestions");
 
 exports.postCheckAnswers = (req, res, next) => {
   let token = req.headers["authorization"];

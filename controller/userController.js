@@ -97,7 +97,7 @@ exports.aggregateUsers = () => {
               {
                 $cond: [
                   { $eq: ["$correct.correct", "$responses.response"] },
-                  4, // +4 for correct answer in the dynamic category
+                  5, // +4 for correct answer in the dynamic category
                   -1.0, // -1.00 for incorrect answer in the dynamic category
                 ],
               },
