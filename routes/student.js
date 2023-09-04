@@ -57,5 +57,4 @@ router.post(
 
 router.patch("/unfairAttempt", userController.unfair);
 
-
 module.exports = router;

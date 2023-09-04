@@ -50,4 +50,9 @@ router.get("/time", (req, res) => {
     India: moment.unix(d / 1000).tz("Asia/Kolkata").toLocaleString(),
   });
 });
+
+router.post("/changePassword", 
+body("email", "email is required").isEmail(),
+body("password", "please enter password").isString(),
+utilController.validateRequest, userController.updatePassword);
 module.exports = router;
