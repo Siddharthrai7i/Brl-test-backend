@@ -97,7 +97,7 @@ exports.aggregateUsers = () => {
               {
                 $cond: [
                   { $eq: ["$correct.correct", "$responses.response"] },
-                  4, // +4 for correct answer in the dynamic category
+                  5, // +4 for correct answer in the dynamic category
                   -1.0, // -1.00 for incorrect answer in the dynamic category
                 ],
               },
@@ -220,4 +220,24 @@ exports.aggregateUsers = () => {
         reject(error);
       });
   });
+};
+
+exports.updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({email: req.body.email});
+    console.log(user);
+    user.password = req.body.password;
+    user
+      .save()
+      .then(() => {
+        res.status(200).json({message:"Password changed succesfully"});
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400);
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(400);
+  }
 };
