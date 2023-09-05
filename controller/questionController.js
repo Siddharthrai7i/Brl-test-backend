@@ -124,12 +124,18 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
               },
             },
+            {
+              $addFields: {
+                isBonus: false
+              }
+            }
           ],
           html_css: [
             {
@@ -140,12 +146,18 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
               },
             },
+            {
+              $addFields: {
+                isBonus: false
+              }
+            }
           ],
           programming: [
             {
@@ -156,12 +168,18 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
               },
             },
+            {
+              $addFields: {
+                isBonus: false
+              }
+            }
           ],
           networking: [
             {
@@ -172,12 +190,18 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
               },
             },
+            {
+              $addFields: {
+                isBonus: false
+              }
+            }
           ],
           aiml: [
             {
@@ -188,12 +212,18 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
               },
             },
+            {
+              $addFields: {
+                isBonus: false
+              }
+            }
           ],
           blockchain: [
             {
@@ -204,12 +234,18 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
               },
             },
+            {
+              $addFields: {
+               isBonus: false
+              }
+            }
           ],
           bonus: [
             {
@@ -220,12 +256,19 @@ exports.getQuestions = async (req, res, next) => {
             {
               $project: {
                 _id: 1,
+                category: 1,
                 question: 1,
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
+
               }
             },
+            {
+              $addFields: {
+                isBonus: true
+              }
+            }
           ],
         },
       },
