@@ -84,7 +84,23 @@ exports.returnQuestions = async (req, res, next) => {
               isOptionImage: 1,
               isQuestionImage: 1,
               imageString: 1,
-              category:1
+              category: 1,
+            },
+          },
+          {
+            $addFields: {
+              isBonus: {
+                $cond: {
+                  if: {
+                    $in: [
+                      "$category",
+                      ["FRONTEND", "ML", "BACKEND", "DESIGNING", "APP"],
+                    ],
+                  },
+                  then: true,
+                  else: false,
+                },
+              },
             },
           },
         ],
@@ -93,7 +109,11 @@ exports.returnQuestions = async (req, res, next) => {
   ]);
   return res
     .status(200)
-    .json({ length: result[0].questionsDetails.length, res_questions: result[0].questionsDetails, time: req.time });
+    .json({
+      length: result[0].questionsDetails.length,
+      res_questions: result[0].questionsDetails,
+      time: req.time,
+    });
 };
 
 // get 25 questions
@@ -102,8 +122,18 @@ exports.getQuestions = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     const option1 = req.query.choice1 ?? "";
     const option2 = req.query.choice2 ?? "";
-    
-    user.choices = [option1.toUpperCase(),option2.toUpperCase()];
+
+    let count = 0;
+
+    if (option1 !== undefined && option1 !== "") {
+      count++;
+      console.log()
+      if (option2 !== undefined && option2 !== "") {
+        count++;
+      }
+    }
+
+    user.choices = [option1.toUpperCase(), option2.toUpperCase()];
 
     // Generate a random number between 1 and 2
     const set = Math.floor(Math.random() * 2) + 1;
@@ -123,6 +153,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
             {
+              $sample: { size: 10 },
+            },
+            {
               $project: {
                 _id: 1,
                 category: 1,
@@ -134,9 +167,9 @@ exports.getQuestions = async (req, res, next) => {
             },
             {
               $addFields: {
-                isBonus: false
-              }
-            }
+                isBonus: false,
+              },
+            },
           ],
           html_css: [
             {
@@ -145,6 +178,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
             {
+              $sample: { size: 5 },
+            },
+            {
               $project: {
                 _id: 1,
                 category: 1,
@@ -156,9 +192,9 @@ exports.getQuestions = async (req, res, next) => {
             },
             {
               $addFields: {
-                isBonus: false
-              }
-            }
+                isBonus: false,
+              },
+            },
           ],
           programming: [
             {
@@ -167,6 +203,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
             {
+              $sample: { size: 7 },
+            },
+            {
               $project: {
                 _id: 1,
                 category: 1,
@@ -178,9 +217,9 @@ exports.getQuestions = async (req, res, next) => {
             },
             {
               $addFields: {
-                isBonus: false
-              }
-            }
+                isBonus: false,
+              },
+            },
           ],
           networking: [
             {
@@ -189,6 +228,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
             {
+              $sample: { size: 3 },
+            },
+            {
               $project: {
                 _id: 1,
                 category: 1,
@@ -200,9 +242,9 @@ exports.getQuestions = async (req, res, next) => {
             },
             {
               $addFields: {
-                isBonus: false
-              }
-            }
+                isBonus: false,
+              },
+            },
           ],
           aiml: [
             {
@@ -211,6 +253,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
             {
+              $sample: { size: 2 },
+            },
+            {
               $project: {
                 _id: 1,
                 category: 1,
@@ -222,9 +267,9 @@ exports.getQuestions = async (req, res, next) => {
             },
             {
               $addFields: {
-                isBonus: false
-              }
-            }
+                isBonus: false,
+              },
+            },
           ],
           blockchain: [
             {
@@ -233,6 +278,9 @@ exports.getQuestions = async (req, res, next) => {
               },
             },
             {
+              $sample: { size: 3 },
+            },
+            {
               $project: {
                 _id: 1,
                 category: 1,
@@ -244,15 +292,26 @@ exports.getQuestions = async (req, res, next) => {
             },
             {
               $addFields: {
-               isBonus: false
-              }
-            }
+                isBonus: false,
+              },
+            },
           ],
           bonus: [
             {
               $match: {
-                $and: [{ category: { $in: [option1.toUpperCase(), option2.toUpperCase()] } }, { set: set }],
-              }
+                $and: [
+                  {
+                    category: {
+                      $in: [option1.toUpperCase(), option2.toUpperCase()],
+                    },
+                  },
+                  { set: set },
+                ],
+              },
+            },
+
+            {
+              $sample: { size: count*5 },
             },
             {
               $project: {
@@ -262,14 +321,13 @@ exports.getQuestions = async (req, res, next) => {
                 options: ["$one", "$two", "$three", "$four"],
                 isOptionImage: 1,
                 isQuestionImage: 1,
-
-              }
+              },
             },
             {
               $addFields: {
-                isBonus: true
-              }
-            }
+                isBonus: true,
+              },
+            },
           ],
         },
       },
@@ -328,7 +386,11 @@ exports.getQuestions = async (req, res, next) => {
 
     return res
       .status(200)
-      .json({ length: ret_questions.length, res_questions: ret_questions, time: req.time });
+      .json({
+        length: ret_questions.length,
+        res_questions: ret_questions,
+        time: req.time,
+      });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ err: "Some error occured." });
