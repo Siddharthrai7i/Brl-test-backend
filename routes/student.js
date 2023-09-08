@@ -7,6 +7,7 @@ const questionController = require("../controller/questionController");
 const userController = require("../controller/userController");
 const utilController = require("../controller/utilController");
 const router = express.Router();
+const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
 const { body } = require("express-validator");
 
 // @route   POST /get-questions
@@ -14,6 +15,7 @@ const { body } = require("express-validator");
 router.get(
   "/get-questions",
   checkTime,
+  rateLimiter,
   questionController.getQuestions
 );
 
@@ -22,6 +24,7 @@ router.get(
 router.get(
   "/return-questions",
   checkTime,
+  rateLimiter,
   questionController.returnQuestions
 );
 
@@ -30,6 +33,7 @@ router.get(
 router.post(
   "/submit-responses",
   checkTime,
+  rateLimiter,
   questionController.saveResponses
 );
 
@@ -38,6 +42,7 @@ router.post(
 router.post(
   "/end-test",
   checkTime,
+  rateLimiter,
   questionController.endTest
 );
 
@@ -45,6 +50,7 @@ router.post(
 // @desc    records feedback
 router.post(
   "/submit-feedback",
+  rateLimiter,
   [
     body("quality", "Please select the quality good/average/bad").exists(),
     body("name", "enter your name").exists(),
