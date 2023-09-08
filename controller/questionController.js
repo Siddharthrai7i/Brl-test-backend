@@ -84,6 +84,7 @@ exports.returnQuestions = async (req, res, next) => {
               isOptionImage: 1,
               isQuestionImage: 1,
               imageString: 1,
+              category:1
             },
           },
         ],

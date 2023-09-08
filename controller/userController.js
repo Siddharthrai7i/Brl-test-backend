@@ -49,8 +49,27 @@ exports.aggregateUsers = () => {
       },
       {
         $addFields: {
-          totalQuestions: { $size: "$questions" }, // Count the total number of questions for the user
+          totalQuestions: { $size: "$questions" },
+          choicesCount: {
+            $reduce: {
+              input: "$choices",
+              initialValue: 0,
+              in: {
+                $cond: [{ $ne: ["$$this", ""] }, { $add: ["$$value", 1] }, "$$value"]
+              }
+            }
+          }
         },
+      },
+      {
+        $addFields: {
+          bonusCount: { $multiply: ["$choicesCount", 5] }
+        }
+      },
+      {
+        $addFields: {
+          questionsCount: { $subtract: ["$totalQuestions", "$bonusCount"] }
+        }
       },
       {
         $unwind: {
@@ -121,6 +140,8 @@ exports.aggregateUsers = () => {
           branch: { $first: "$branch" },
           switchCounter: { $first: "$switchCounter" },
           totalQuestions: { $first: "$totalQuestions" },
+          questionsCount: { $first: "$questionsCount" },
+          bonusCount: { $first: "$bonusCount" },
           score: { $sum: "$scoreChange" },
           aptitude: {
             $sum: {
@@ -200,13 +221,55 @@ exports.aggregateUsers = () => {
       },
       {
         $addFields: {
-          // Multiply the score by 4 and then normalize it to 100 based on the total number of questions
           normalizedScore: {
             $multiply: [
+              {
+                $add: [
+                  {
+                    $divide: [
+                      {
+                        $add: [
+                          "$aptitude",
+                          "$html_css",
+                          "$programming",
+                          "$networking",
+                          "$blockchain",
+                          "$aiml",
+                        ],
+                      },
+                      "$questionsCount",
+                    ],
+                  },
+                  {
+                    $divide: ["$bonus", "$bonusCount"],
+                  },
+                ],
+              },
               100,
-              { $divide: ["$score", { $multiply: ["$totalQuestions", 4] }] },
             ],
           },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          email: 1,
+          rollNumber: 1,
+          branch: 1,
+          switchCounter: 1,
+          totalQuestions: 1,
+          questionsCount: 1,
+          bonusCount: 1,
+          score: 1,
+          aptitude: 1,
+          html_css: 1,
+          programming: 1,
+          networking: 1,
+          aiml: 1,
+          blockchain: 1,
+          bonus: 1,
+          normalizedScore: 1,
         },
       },
       {
@@ -241,3 +304,14 @@ exports.updatePassword = async (req, res, next) => {
     res.status(400);
   }
 };
+
+
+exports.deleteUser = async(req,res) =>{
+   User.deleteOne({email: req.body.email}).then(()=>{
+    req.status(200).json({message:"success"});
+   }).catch((err)=>{ 
+    console.log(err);
+    req.status(400).json({message:"failed"});
+  }).catch((err)=>{ 
+  })
+}
