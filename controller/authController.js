@@ -16,14 +16,17 @@ const checkToken = (req) => {
 
 exports.loginStudent = (req, res) => {
   const { rollNumber, password, recaptcha } = req.body;
+  JSON.stringify(recaptcha);
+  console.log(process.env.CAPTCHA_SECRET)
   axios({
     url: `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${recaptcha}`,
     method: "POST",
   }).then((data) => {
-    console.log(data);
-    if (data.success) {
-      console.log("success: true")
-      User.findOne({ rollNumber })
+    console.log("heree");
+    console.log(data.data);
+    if (data.data.success) {
+      console.log("success: true");
+      User.findOne({ rollNumber: rollNumber })
         .then((user) => {
           if (user) {
             if (!user.isLoggedIn) {
@@ -54,16 +57,19 @@ exports.loginStudent = (req, res) => {
               });
             }
           } else {
-            res.status(400).json({ error: "You are not a Human" });
+            res.status(400).json({ error: "User does not exist" });
           }
-        })
-        .catch((err) => {
+        }).catch(err=>{
           console.log(err);
           res.status(400).json({ error: "Something went wrong" });
-        });
+        })
+        
     } else {
-      res.status(400).json({ error: "No User Exist" });
+      res.status(400).json({ error: "You are not a Human" });
     }
+  }).catch((err) => {
+    console.log(err);
+    res.status(400).json({ error: "Something went wrong" });
   });
 };
 
