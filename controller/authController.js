@@ -15,12 +15,14 @@ const checkToken = (req) => {
 };
 
 exports.loginStudent = (req, res) => {
-  const { rollNumber, password, token } = req.body;
+  const { rollNumber, password, recaptcha } = req.body;
   axios({
-    url: `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${token}`,
+    url: `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${recaptcha}`,
     method: "POST",
   }).then((data) => {
+    console.log(data);
     if (data.success) {
+      console.log("success: true")
       User.findOne({ rollNumber })
         .then((user) => {
           if (user) {

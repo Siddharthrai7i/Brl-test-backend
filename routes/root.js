@@ -42,17 +42,25 @@ router.post(
 );
 
 router.get("/time", (req, res) => {
-  var d = process.env.TESTENDTIME * 1 - 1800000;  // time stamp of 18 Aug 4:00 PM IST
+  var d = process.env.TESTENDTIME * 1 - 1800000; // time stamp of 18 Aug 4:00 PM IST
   res.status(200).json({
     success: true,
     epoch: d,
     time: new Date(d).toUTCString(),
-    India: moment.unix(d / 1000).tz("Asia/Kolkata").toLocaleString(),
+    India: moment
+      .unix(d / 1000)
+      .tz("Asia/Kolkata")
+      .toLocaleString(),
   });
 });
 
-router.post("/changePassword", 
-body("email", "email is required").isEmail(),
-body("password", "please enter password").isString(),
-utilController.validateRequest, userController.updatePassword);
+router.post(
+  "/changePassword",
+  body("email", "email is required").isEmail(),
+  body("password", "please enter password").isString(),
+  utilController.validateRequest,
+  userController.updatePassword
+);
+
+
 module.exports = router;
