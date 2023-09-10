@@ -17,15 +17,11 @@ const checkToken = (req) => {
 exports.loginStudent = (req, res) => {
   const { rollNumber, password, recaptcha } = req.body;
   JSON.stringify(recaptcha);
-  console.log(process.env.CAPTCHA_SECRET)
   axios({
     url: `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${recaptcha}`,
     method: "POST",
   }).then((data) => {
-    console.log("heree");
-    console.log(data.data);
     if (data.data.success) {
-      console.log("success: true");
       User.findOne({ rollNumber: rollNumber })
         .then((user) => {
           if (user) {
