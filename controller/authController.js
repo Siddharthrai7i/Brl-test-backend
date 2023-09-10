@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 const Test = require("../model/Time");
+const axios = require("axios");
+require("dotenv").config();
 
 const checkToken = (req) => {
   const header = req.headers["authorization"];
@@ -10,6 +12,28 @@ const checkToken = (req) => {
   } else {
     return { success: false };
   }
+};
+
+exports.verifyRecaptcha = (req, res, next) => {
+  const recaptcha = req.body.recaptcha;
+  JSON.stringify(recaptcha);
+  axios({
+    url: `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${recaptcha}`,
+    method: "POST",
+  })
+    .then((data) => {
+      if (data.data.success) {
+        next();
+      } else {
+        res.status(400).json({ error: "You are not a Human" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res
+        .status(400)
+        .json({ error: "Something went wrong. Please try again later" });
+    });
 };
 
 exports.loginStudent = (req, res) => {
@@ -25,6 +49,7 @@ exports.loginStudent = (req, res) => {
             async (err, token) => {
               user.isLoggedIn = true;
               await user.save();
+              console.log(token);
               res.json({
                 token: token,
                 time: {
@@ -49,6 +74,7 @@ exports.loginStudent = (req, res) => {
   });
 };
 
+
 exports.authStudent = async (req, res, next) => {
   var result = await checkToken(req);
   if (result.success === true && result.token != undefined) {
@@ -72,48 +98,47 @@ exports.authStudent = async (req, res, next) => {
   }
 };
 
-exports.checkTime = (req,res,next)=>{
-  try{
-	  Test.findOne({ title: "BRL Recruitment Test"}, function (err, result) {
+exports.checkTime = (req, res, next) => {
+  try {
+    Test.findOne({ title: "BRL Recruitment Test" }, function (err, result) {
       var time = new Date();
       if (err) {
         console.log(err);
         res.status(500).send("Internal Server Error");
-		  }
-		  else {
-			  if (time > result.startTime) {
-				  if (time < result.endTime) {
-					  const remainingTime = (result.endTime - time);
-            const minutes = Math.max(0,Math.floor(remainingTime / 60000));
-            const seconds = Math.max(0,Math.floor((remainingTime % 60000) / 1000));
+      } else {
+        if (time > result.startTime) {
+          if (time < result.endTime) {
+            const remainingTime = result.endTime - time;
+            const minutes = Math.max(0, Math.floor(remainingTime / 60000));
+            const seconds = Math.max(
+              0,
+              Math.floor((remainingTime % 60000) / 1000)
+            );
             req.time = {
               minutes: minutes,
-              seconds:seconds
-            }
-					  next();
-				  }
-				  else {
-					  res.status(500).json({
-						  message: "Test has Ended",
-					  });
-				  }
-		 	  }
-			  else {
-				  message = "Test Not Yet Started";
-				  var time_to_start = result.startTime - time;
+              seconds: seconds,
+            };
+            next();
+          } else {
+            res.status(500).json({
+              message: "Test has Ended",
+            });
+          }
+        } else {
+          message = "Test Not Yet Started";
+          var time_to_start = result.startTime - time;
           const minutes = Math.floor(time_to_start / 60000);
           const seconds = Math.floor((time_to_start % 60000) / 1000);
-				  res.status(500).json({
-					  message: message,
+          res.status(500).json({
+            message: message,
             minutes: minutes,
-            seconds:seconds
-				  });
-			  }
-		  }
-    })
-  }catch(err){
+            seconds: seconds,
+          });
+        }
+      }
+    });
+  } catch (err) {
     console.log(err);
-    res.status(500).json({message: "Internal Server Error"});
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
-
+};

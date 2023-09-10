@@ -1,6 +1,6 @@
 var request_count = {};
 
-const rateLimitProps = { max_req: 100, refresh_time: 1 * 60 * 1000 };
+const rateLimitProps = { max_req: 20, refresh_time: 1 * 60 * 1000 };
 var last_reset = new Date();
 
 exports.rateLimiter = (req, res, next) => {
