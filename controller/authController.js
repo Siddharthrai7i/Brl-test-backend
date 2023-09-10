@@ -14,60 +14,66 @@ const checkToken = (req) => {
   }
 };
 
-exports.loginStudent = (req, res) => {
-  const { rollNumber, password, recaptcha } = req.body;
+exports.verifyRecaptcha = (req, res, next) => {
+  const recaptcha = req.body.recaptcha;
   JSON.stringify(recaptcha);
   axios({
     url: `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${recaptcha}`,
     method: "POST",
-  }).then((data) => {
-    if (data.data.success) {
-      User.findOne({ rollNumber: rollNumber })
-        .then((user) => {
-          if (user) {
-            if (!user.isLoggedIn) {
-              if (user.password === password) {
-                jwt.sign(
-                  { user: { id: user.id } },
-                  process.env.TOKEN_SECRET,
-                  { expiresIn: "1h" },
-                  async (err, token) => {
-                    user.isLoggedIn = true;
-                    await user.save();
-                    res.json({
-                      token: token,
-                      time: {
-                        hours: 00,
-                        minutes: 60,
-                        seconds: 00,
-                      },
-                    });
-                  }
-                );
-              } else {
-                res.status(401).json({ error: "Password Incorrect" });
-              }
-            } else {
-              res.status(400).json({
-                error: "User Already Logged In",
+  })
+    .then((data) => {
+      if (data.data.success) {
+        next();
+      } else {
+        res.status(400).json({ error: "You are not a Human" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res
+        .status(400)
+        .json({ error: "Something went wrong. Please try again later" });
+    });
+};
+
+exports.loginStudent = (req, res) => {
+  const { rollNumber, password } = req.body;
+  User.findOne({ rollNumber }).then((user) => {
+    if (user) {
+      if (!user.isLoggedIn) {
+        if (user.password === password) {
+          jwt.sign(
+            { user: { id: user.id } },
+            process.env.TOKEN_SECRET,
+            { expiresIn: "1h" },
+            async (err, token) => {
+              user.isLoggedIn = true;
+              await user.save();
+              console.log(token);
+              res.json({
+                token: token,
+                time: {
+                  hours: 00,
+                  minutes: 60,
+                  seconds: 00,
+                },
               });
             }
-          } else {
-            res.status(400).json({ error: "User does not exist" });
-          }
-        }).catch(err=>{
-          console.log(err);
-          res.status(400).json({ error: "Something went wrong" });
-        })
-        
+          );
+        } else {
+          res.status(401).json({ error: "Password Incorrect" });
+        }
+      } else {
+        res.status(400).json({
+          error: "User Already Logged In",
+        });
+      }
     } else {
-      res.status(400).json({ error: "You are not a Human" });
+      res.status(400).json({ error: "No User Exist" });
     }
-  }).catch((err) => {
-    console.log(err);
-    res.status(400).json({ error: "Something went wrong" });
   });
 };
+
 
 exports.authStudent = async (req, res, next) => {
   var result = await checkToken(req);
