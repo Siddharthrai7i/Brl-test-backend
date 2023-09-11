@@ -10,21 +10,21 @@ const { body } = require("express-validator");
 // @route   POST /register
 // @desc    Register user and return user object
 // @access  Public
-router.post(
-  "/register",
-  [
-    body("name", "Name is required").isString().exists(),
-    body("phoneNumber", "Phone Number is required").isString().exists(),
-    body("rollNumber", "roll number is required").isNumeric().exists(),
-    body("email", "email is required").isEmail().exists(),
-    body("branch", "branch is required").isString().exists(),
-    body("password", "password of min length 5 required")
-      .isLength({ min: 5 })
-      .exists(),
-  ],
-  utilController.validateRequest,
-  userController.addUser
-);
+// router.post(
+//   "/register",
+//   [
+//     body("name", "Name is required").isString().exists(),
+//     body("phoneNumber", "Phone Number is required").isString().exists(),
+//     body("rollNumber", "roll number is required").isNumeric().exists(),
+//     body("email", "email is required").isEmail().exists(),
+//     body("branch", "branch is required").isString().exists(),
+//     body("password", "password of min length 5 required")
+//       .isLength({ min: 5 })
+//       .exists(),
+//   ],
+//   utilController.validateRequest,
+//   userController.addUser
+// );
 
 // @route   POST /login
 // @desc    Login user and return jwt and user object
