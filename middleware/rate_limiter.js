@@ -1,6 +1,6 @@
 var request_count = {};
 
-const rateLimitProps = { max_req: 20, refresh_time: 1 * 60 * 1000 };
+const rateLimitProps = { max_req: 15, refresh_time: 1 * 60 * 1000 };
 var last_reset = new Date();
 
 exports.rateLimiter = (req, res, next) => {
@@ -15,13 +15,13 @@ exports.rateLimiter = (req, res, next) => {
     if (request_count[id] > rateLimitProps.max_req) {
       return res
         .status(502)
-        .send("Server Unavailable! Please try again after few minutes");
+        .json({error: "Server Unavailable! Please try again after few minutes"});
     }
     next();
   } catch (err) {
     console.log(err);
     return res
       .status(502)
-      .send("Server Unavailable! Please try again after few minutes");
+      .json({error: "Server Unavailable! Please try again after few minutes"});
   }
 };
