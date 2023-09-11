@@ -20,19 +20,19 @@ const mongoose = require('mongoose');
 
 
 
-router.get("/result", (req, res) => {
-  userController.aggregateUsers()
-  .then(() => {
-    return mongoose.connection.db.collection('results').find({}).toArray();
-  })
-  .then((result) => {
-    return res.status(200).json({result})
-  })
-  .catch((error) => {
-    console.error(error);
-    res.status(500).send("Error occurred during aggregation.");
-  });
-});
+// router.get("/result", (req, res) => {
+//   userController.aggregateUsers()
+//   .then(() => {
+//     return mongoose.connection.db.collection('results').find({}).toArray();
+//   })
+//   .then((result) => {
+//     return res.status(200).json({result})
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//     res.status(500).send("Error occurred during aggregation.");
+//   });
+// });
 
 // const Test = require("../model/Time");
 // router.post("/make", (req, res) => {

@@ -61,6 +61,6 @@ router.post(
   feedbackController.addFeedback
 );
 
-router.patch("/unfairAttempt", userController.unfair);
+router.patch("/unfairAttempt", rateLimiter, userController.unfair);
 
 module.exports = router;

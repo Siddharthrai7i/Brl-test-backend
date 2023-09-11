@@ -15,13 +15,13 @@ const cors = require("cors");
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 
-const limiter = rateLimit({
-	windowMs: 2 * 60 * 1000, // 10 minutes
-	max: 2500, // limit each IP to 400 requests per windowMs
-});
+// const limiter = rateLimit({
+// 	windowMs: 2 * 60 * 1000, // 10 minutes
+// 	max: 2500, // limit each IP to 400 requests per windowMs
+// });
 
 app.set('trust proxy', 1);
-app.use(limiter);
+// app.use(limiter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
