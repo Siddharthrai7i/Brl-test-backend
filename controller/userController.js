@@ -270,12 +270,7 @@ exports.aggregateUsers = () => {
                           ],
                         },
                         {
-                          $divide: [
-                            "$bonus",
-                            {
-                              $multiply: ["$bonusCount", 5],
-                            },
-                          ],
+                          $divide: ["$bonus", { $multiply: ["$bonusCount", 5] }],
                         },
                       ],
                     },
@@ -286,7 +281,7 @@ exports.aggregateUsers = () => {
               ],
             },
             else: {
-              multiply: [
+              $multiply: [
                 {
                   $divide: [
                     {
@@ -311,6 +306,7 @@ exports.aggregateUsers = () => {
         },
       },
     };
+    
 
     // Stage 12: Project desired fields
     const projectFieldsStage = {
@@ -349,7 +345,7 @@ exports.aggregateUsers = () => {
       unwindResponsesStage,
       lookupCorrectAnswersStage,
       unwindCorrectAnswersStage,
-      matchNonEmptyChoicesStage,
+      // matchNonEmptyChoicesStage,
       calculateScoreChangesStage,
       groupAndCalculateScoresStage,
       calculateNormalizedScoreStage,
@@ -399,62 +395,6 @@ exports.deleteUser = async (req, res) => {
     .catch((err) => {});
 };
 
-// {
-//   $addFields: {
-//     normalizedScore: {
-//       $cond: {
-//         if: { $gt: ["$bonusCount", 0] }, // Check if bonusCount is greater than 0
-//         then: {
-//           $divide: [
-//             {
-//               $add: [
-//                 {
-//                   $divide: [
-//                     {
-//                       $add: [
-//                         "$aptitude",
-//                         "$html_css",
-//                         "$programming",
-//                         "$networking",
-//                         "$blockchain",
-//                         "$aiml",
-//                       ],
-//                     },
-//                     "$questionsCount",
-//                   ],
-//                 },
-//                 "$bonus",
-//               ],
-//             },
-//             "$bonusCount",
-//           ],
-//         },
-//         else: {
-//           $divide: [
-//             {
-//               $add: [
-//                 {
-//                   $divide: [
-//                     {
-//                       $add: [
-//                         "$aptitude",
-//                         "$html_css",
-//                         "$programming",
-//                         "$networking",
-//                         "$blockchain",
-//                         "$aiml",
-//                       ],
-//                     },
-//                     "$questionsCount",
-//                   ],
-//                 },
-//                 "$bonus",
-//               ],
-//             },
-//             2, // Divide by 2 if bonusCount is not greater than 0
-//           ],
-//         },
-//       },
-//     },
-//   },
+// exports.changeIsLoggedIn = async(req,res)=>{
+//   User.find
 // }
