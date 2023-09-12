@@ -5,7 +5,9 @@ const router = express.Router();
 const { body } = require("express-validator");
 const User = require("../model/User");
 const utilController = require("../controller/utilController");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const axios = require("axios");
+require("dotenv").config();
 
 // router.post("/check-answers", questionController.postCheckAnswers);
 
@@ -17,22 +19,38 @@ const mongoose = require('mongoose');
 //get All Users
 // router.post("/users", userController.getUsers);
 
-
-
-
-// router.get("/result", (req, res) => {
-//   userController.aggregateUsers()
-//   .then(() => {
-//     return mongoose.connection.db.collection('results').find({}).toArray();
-//   })
-//   .then((result) => {
-//     return res.status(200).json({result})
-//   })
-//   .catch((error) => {
-//     console.error(error);
-//     res.status(500).send("Error occurred during aggregation.");
-//   });
-// });
+router.get("/result", async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if(user.email === process.env.ADMIN1 || user.email === process.env.ADMIN2){
+    userController
+      .aggregateUsers()
+      .then(() => {
+        return mongoose.connection.db.collection("results").find({}).toArray();
+      })
+      .then((result) => {
+        axios({
+          method: "post",
+          url: "https://reload23api.brlakgec.com/update_score/",
+          data: {
+            key: process.env.RESULT_SECRET,
+            result,
+          },
+        });
+        return res.status(200).json({ result });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({message:"Error occurred during aggregation."});
+      });
+    } else{
+        res.status(500).json({message: "You are not an admin"});
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({message:"Error occurred during aggregation."});
+  }
+});
 
 // const Test = require("../model/Time");
 // router.post("/make", (req, res) => {
@@ -52,6 +70,5 @@ const mongoose = require('mongoose');
 //     });
 //   }
 // });
-
 
 module.exports = router;

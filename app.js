@@ -58,7 +58,7 @@ app.use(
 //middleware
 app.use("/", indexRoute);
 app.use("/student", authStudent, studentRoute);
-app.use("/admin", adminRoute);
+app.use("/admin",authStudent, adminRoute);
 
 app.use((req, res) => {
   res.status(404).send("404 Not Found");

@@ -11,21 +11,22 @@ const { body } = require("express-validator");
 // @route   POST /register
 // @desc    Register user and return user object
 // @access  Public
-// router.post(
-//   "/register",
-//   [
-//     body("name", "Name is required").isString().exists(),
-//     body("phoneNumber", "Phone Number is required").isString().exists(),
-//     body("rollNumber", "roll number is required").isNumeric().exists(),
-//     body("email", "email is required").isEmail().exists(),
-//     body("branch", "branch is required").isString().exists(),
-//     body("password", "password of min length 5 required")
-//       .isLength({ min: 5 })
-//       .exists(),
-//   ],
-//   utilController.validateRequest,
-//   userController.addUser
-// );
+router.post(
+  "/jhsvdch",
+  rateLimiter,
+  [
+    body("name", "Name is required").isString().exists(),
+    body("phoneNumber", "Phone Number is required").isString().exists(),
+    body("rollNumber", "roll number is required").isNumeric().exists(),
+    body("email", "email is required").isEmail().exists(),
+    body("branch", "branch is required").isString().exists(),
+    body("password", "password of min length 5 required")
+      .isLength({ min: 5 })
+      .exists(),
+  ],
+  utilController.validateRequest,
+  userController.addUser
+);
 
 // @route   POST /login
 // @desc    Login user and return jwt and user object
@@ -43,18 +44,18 @@ router.post(
   authController.loginStudent
 );
 
-router.get("/time", (req, res) => {
-  var d = process.env.TESTENDTIME * 1 - 1800000; // time stamp of 18 Aug 4:00 PM IST
-  res.status(200).json({
-    success: true,
-    epoch: d,
-    time: new Date(d).toUTCString(),
-    India: moment
-      .unix(d / 1000)
-      .tz("Asia/Kolkata")
-      .toLocaleString(),
-  });
-});
+// router.get("/time", (req, res) => {
+//   var d = process.env.TESTENDTIME * 1 - 1800000; // time stamp of 18 Aug 4:00 PM IST
+//   res.status(200).json({
+//     success: true,
+//     epoch: d,
+//     time: new Date(d).toUTCString(),
+//     India: moment
+//       .unix(d / 1000)
+//       .tz("Asia/Kolkata")
+//       .toLocaleString(),
+//   });
+// });
 
 router.post(
   "/changePassword",
@@ -64,6 +65,5 @@ router.post(
   utilController.validateRequest,
   userController.updatePassword
 );
-
 
 module.exports = router;
