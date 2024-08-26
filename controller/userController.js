@@ -264,13 +264,14 @@ exports.aggregateUsers = () => {
                                 "$aiml",
                               ],
                             },
-                            {
-                              $multiply: ["$nonBonusCount", 4],
-                            },
+                            { $cond: [{ $eq: ["$nonBonusCount", 0] }, 1, { $multiply: ["$nonBonusCount", 4] }] } // Avoid zero division
                           ],
                         },
                         {
-                          $divide: ["$bonus", { $multiply: ["$bonusCount", 5] }],
+                          $divide: [
+                            "$bonus",
+                            { $cond: [{ $eq: ["$bonusCount", 0] }, 1, { $multiply: ["$bonusCount", 5] }] } // Avoid zero division
+                          ],
                         },
                       ],
                     },
@@ -294,9 +295,7 @@ exports.aggregateUsers = () => {
                         "$aiml",
                       ],
                     },
-                    {
-                      $multiply: ["$nonBonusCount", 4],
-                    },
+                    { $cond: [{ $eq: ["$nonBonusCount", 0] }, 1, { $multiply: ["$nonBonusCount", 4] }] } // Avoid zero division
                   ],
                 },
                 100,
