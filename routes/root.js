@@ -3,7 +3,7 @@ const utilController = require("../controller/utilController");
 const userController = require("../controller/userController");
 const authController = require("../controller/authController");
 const moment = require("moment-timezone");
-const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
+//const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
 const { body } = require("express-validator");
 
 // const auth = require('../middleware/auth')
@@ -13,7 +13,7 @@ const { body } = require("express-validator");
 // @access  Public
 router.post(
   "/register",
-  rateLimiter,
+  //rateLimiter,
   [
     body("name", "Name is required").isString().exists(),
     body("phoneNumber", "Phone Number is required").isString().exists(),
@@ -59,7 +59,7 @@ router.post(
 
 router.post(
   "/changePassword",
-  rateLimiter,
+  //rateLimiter,
   body("email", "email is required").isEmail(),
   body("password", "please enter password").isString(),
   utilController.validateRequest,
