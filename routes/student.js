@@ -7,7 +7,7 @@ const questionController = require("../controller/questionController");
 const userController = require("../controller/userController");
 const utilController = require("../controller/utilController");
 const router = express.Router();
-const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
+//const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
 const { body } = require("express-validator");
 
 // @route   POST /get-questions
@@ -61,6 +61,6 @@ router.post(
   feedbackController.addFeedback
 );
 
-router.patch("/unfairAttempt", rateLimiter, userController.unfair);
+router.patch("/unfairAttempt", /*rateLimiter,*/ userController.unfair);
 
 module.exports = router;
