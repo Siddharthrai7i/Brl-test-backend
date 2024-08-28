@@ -13,7 +13,7 @@ const { body } = require("express-validator");
 // @access  Public
 router.post(
   "/register",
-  rateLimiter,
+  //rateLimiter,
   [
     body("name", "Name is required").isString().exists(),
     body("phoneNumber", "Phone Number is required").isString().exists(),
