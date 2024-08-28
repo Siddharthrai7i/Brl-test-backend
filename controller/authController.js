@@ -49,7 +49,6 @@ exports.loginStudent = (req, res) => {
             async (err, token) => {
               user.isLoggedIn = true;
               await user.save();
-              console.log(token);
               res.json({
                 token: token,
                 time: {

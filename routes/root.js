@@ -12,8 +12,8 @@ const { body } = require("express-validator");
 // @desc    Register user and return user object
 // @access  Public
 router.post(
-  "/jhsvdch",
-  //rateLimiter,
+  "/register",
+  rateLimiter,
   [
     body("name", "Name is required").isString().exists(),
     body("phoneNumber", "Phone Number is required").isString().exists(),
@@ -39,7 +39,7 @@ router.post(
       .exists(),
     body("password", "Invalid Credentials").exists(),
   ],
-  //authController.verifyRecaptcha,
+  // authController.verifyRecaptcha,
   utilController.validateRequest,
   authController.loginStudent
 );
