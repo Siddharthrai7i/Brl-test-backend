@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../model/User");
 const Question = require("../model/Question");
+const Result=require("../model/result");
 
 exports.postCheckAnswers = (req, res, next) => {
   let token = req.headers["authorization"];
@@ -550,3 +551,22 @@ exports.endTest = async (req, res) => {
     return res.status(500).json({ error: "Server Error" });
   }
 };
+
+exports.getResult=async(req,res)=>{
+  try{
+    const email=req.params.email;
+    if(!email){
+      return res.status(400).json({error:"No email provided"});
+    }
+    const result=await Result.findOne({email:email});
+    if(!result){
+      return res.status(404).json({error:"No details found"});
+    }
+    return res.status(200).json({success:true,result});
+  }catch(err){
+    console.error(err);
+    return res.status(500).json({error:"Internal server error"});
+  }
+}
+
+
