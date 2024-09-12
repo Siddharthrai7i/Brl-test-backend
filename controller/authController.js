@@ -41,7 +41,13 @@ exports.loginStudent = (req, res) => {
   User.findOne({ rollNumber }).then((user) => {
     if (user) {
       if (!user.isLoggedIn) {
-        if (user.password === password) {
+        // Pad the user password with leading zeros if less than 6 characters
+        let dbPassword = user.password;
+        if (dbPassword.length < 6) {
+          dbPassword = dbPassword.padStart(6, '0');
+        }
+
+        if (dbPassword === password) {
           jwt.sign(
             { user: { id: user.id } },
             process.env.TOKEN_SECRET,
@@ -72,7 +78,6 @@ exports.loginStudent = (req, res) => {
     }
   });
 };
-
 
 exports.authStudent = async (req, res, next) => {
   var result = await checkToken(req);
