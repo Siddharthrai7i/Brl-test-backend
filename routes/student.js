@@ -7,7 +7,7 @@ const questionController = require("../controller/questionController");
 const userController = require("../controller/userController");
 const utilController = require("../controller/utilController");
 const router = express.Router();
-const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
+//const rateLimiter = require("../middleware/rate_limiter").rateLimiter;
 const { body } = require("express-validator");
 
 // @route   POST /get-questions
@@ -15,7 +15,7 @@ const { body } = require("express-validator");
 router.get(
   "/get-questions",
   checkTime,
-  rateLimiter,
+  // rateLimiter,
   questionController.getQuestions
 );
 
@@ -24,7 +24,7 @@ router.get(
 router.get(
   "/return-questions",
   checkTime,
-  rateLimiter,
+  // rateLimiter,
   questionController.returnQuestions
 );
 
@@ -33,7 +33,7 @@ router.get(
 router.post(
   "/submit-responses",
   checkTime,
-  rateLimiter,
+  // rateLimiter,
   questionController.saveResponses
 );
 
@@ -42,7 +42,7 @@ router.post(
 router.post(
   "/end-test",
   checkTime,
-  rateLimiter,
+  // rateLimiter,
   questionController.endTest
 );
 
@@ -50,7 +50,7 @@ router.post(
 // @desc    records feedback
 router.post(
   "/submit-feedback",
-  rateLimiter,
+  // rateLimiter,
   [
     body("quality", "Please select the quality good/average/bad").exists(),
     body("name", "enter your name").exists(),
@@ -61,6 +61,11 @@ router.post(
   feedbackController.addFeedback
 );
 
-router.patch("/unfairAttempt", rateLimiter, userController.unfair);
+router.get(
+  "/getResult/:email",
+  questionController.getResult
+);
+
+router.patch("/unfairAttempt", /*rateLimiter,*/ userController.unfair);
 
 module.exports = router;
