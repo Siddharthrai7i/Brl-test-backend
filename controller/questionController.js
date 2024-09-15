@@ -588,7 +588,7 @@ exports.getResult = async (req, res) => {
     // Step 3: Find the result by user's email or other identifier
     const result = await Result.findOne({ email: user.email }); // Assuming results are stored with user's email
     if (!result) {
-      return res.status(404).json({ error: 'No result found for this user' });
+      return res.status(200).json({ error: 'No result found for this user' });
     }
 
     // Step 4: Return the result
