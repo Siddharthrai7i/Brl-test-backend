@@ -10,6 +10,7 @@ const studentRoute = require("./routes/student");
 const indexRoute = require("./routes/root");
 const adminRoute = require("./routes/admin");
 const { authStudent } = require("./controller/authController");
+const questionController = require('./controller/questionController');
 const cors = require("cors");
 
 dotenv.config();
@@ -59,6 +60,7 @@ app.use(
 app.use("/", indexRoute);
 app.use("/student", authStudent, studentRoute);
 app.use("/admin",authStudent, adminRoute);
+app.get("/getResult/:email", questionController.getResult);
 
 app.use((req, res) => {
   res.status(404).send("404 Not Found");

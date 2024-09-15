@@ -61,10 +61,10 @@ router.post(
   feedbackController.addFeedback
 );
 
-router.get(
-  "/getResult/:email",
-  questionController.getResult
-);
+// router.get(
+//   "/getResult/:email",
+//   questionController.getResult
+// );
 
 router.patch("/unfairAttempt", /*rateLimiter,*/ userController.unfair);
 
