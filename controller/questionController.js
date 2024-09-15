@@ -552,21 +552,51 @@ exports.endTest = async (req, res) => {
   }
 };
 
-exports.getResult=async(req,res)=>{
-  try{
-    const email=req.params.email;
-    if(!email){
-      return res.status(400).json({error:"No email provided"});
+// exports.getResult=async(req,res)=>{
+//   try{
+//     const email=req.params.email;
+//     if(!email){
+//       return res.status(400).json({error:"No email provided"});
+//     }
+//     const result=await Result.findOne({email:email});
+//     if(!result){
+//       return res.status(404).json({error:"No details found"});
+//     }
+//     return res.status(200).json({success:true,result});
+//   }catch(err){
+//     console.error(err);
+//     return res.status(500).json({error:"Internal server error"});
+//   }
+// }
+
+
+
+exports.getResult = async (req, res) => {
+  try {
+    // Step 1: Extract the token from headers
+    const token = req.headers.authorization?.split(' ')[1]; // Assuming the token is in the format "Bearer <token>"
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
     }
-    const result=await Result.findOne({email:email});
-    if(!result){
-      return res.status(404).json({error:"No details found"});
+
+    // Step 2: Find the user by token
+    const user = await User.findOne({ token: token });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
-    return res.status(200).json({success:true,result});
-  }catch(err){
+
+    // Step 3: Find the result by user's email or other identifier
+    const result = await Result.findOne({ email: user.email }); // Assuming results are stored with user's email
+    if (!result) {
+      return res.status(404).json({ error: 'No result found for this user' });
+    }
+
+    // Step 4: Return the result
+    return res.status(200).json({ success: true, result });
+  } catch (err) {
     console.error(err);
-    return res.status(500).json({error:"Internal server error"});
+    return res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 
