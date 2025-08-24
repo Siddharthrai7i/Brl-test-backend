@@ -16,7 +16,6 @@ require("dotenv").config();
 // @desc    Add questions to database
 // @access  Public
 router.post("/add-question", questionController.addQuestions);
-
 //get All Users
 // router.post("/users", userController.getUsers);
 

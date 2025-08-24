@@ -65,7 +65,7 @@ exports.postCheckAnswers = (req, res, next) => {
 
 exports.returnQuestions = async (req, res, next) => {
   const result = await User.aggregate([
-    { $match: { _id: ObjectId(req.user.id) } },
+    { $match: { _id: new ObjectId(req.user.id) } },
     {
       $lookup: {
         from: Question.collection.name,

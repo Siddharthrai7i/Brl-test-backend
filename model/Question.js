@@ -43,5 +43,4 @@ const QuestionSchema = new mongoose.Schema({
     required: true,
   },
 });
-
 module.exports = Question = mongoose.model("Question", QuestionSchema);

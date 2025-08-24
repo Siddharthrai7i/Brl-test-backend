@@ -33,7 +33,7 @@ mongoose
   .connect(process.env.DB_CONNECT, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true,
+
   })
   .then(() => console.log("MongoDB Connected.."))
   .catch((err) => console.log(err));
