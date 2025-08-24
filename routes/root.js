@@ -41,7 +41,8 @@ router.post(
       .exists(),
     body("password", "Invalid Credentials").exists(),
   ],
-  // authController.verifyRecaptcha,
+  // 
+  authController.verifyRecaptcha,
   utilController.validateRequest,
   authController.loginStudent
 );
